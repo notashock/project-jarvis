@@ -1,0 +1,45 @@
+<div class="tasks-container">
+  <!-- Task List -->
+  <div class="tasks-list">
+    <div
+      *ngFor="let task of tasks"
+      class="task-bubble"
+      [class.done]="task.done"
+    >
+      <div class="task-header">
+        <span class="task-title">{{ task.title }}</span>
+        <span class="task-deadline">
+          {{ task.deadline | date:'MMM d, y, h:mm a' }}
+        </span>
+      </div>
+
+      <div class="task-actions">
+        <button (click)="toggleDone(task.id)">
+          {{ task.done ? 'Undo' : 'Done' }}
+        </button>
+        <button class="delete" (click)="deleteTask(task.id)">Delete</button>
+      </div>
+    </div>
+
+    <!-- Empty state -->
+    <p class="empty" *ngIf="tasks.length === 0">
+      🎉 No tasks yet! Add one below.
+    </p>
+  </div>
+
+  <!-- Input Form -->
+  <div class="task-input">
+    <input
+      type="text"
+      placeholder="Type a new task..."
+      [(ngModel)]="newTask"
+    />
+
+    <input
+      type="datetime-local"
+      [(ngModel)]="newDeadline"
+    />
+
+    <button (click)="addTask()">➤</button>
+  </div>
+</div>
