@@ -1,0 +1,17 @@
+.home-container {
+  display: flex;
+  gap: 2rem;
+  padding: 1rem;
+}
+
+.todo-section,
+.emails-section {
+  flex: 1;
+}
+
+.email-card {
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}

@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
-import { TasksComponent } from './tasks/tasks';
+import { HomeComponent } from './home/home';
 
 export const routes: Routes = [
-  { path: '', redirectTo: '/tasks', pathMatch: 'full' },
-  { path: 'tasks', component: TasksComponent }
+  { path: '', component: HomeComponent }, // default route
 ];

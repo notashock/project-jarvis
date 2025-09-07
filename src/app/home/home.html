@@ -1,0 +1,25 @@
+<div class="home-container">
+  <!-- Left: Todo List -->
+  <div class="todo-section">
+    <app-todo></app-todo>
+  </div>
+
+  <!-- Right: Emails -->
+  <div class="emails-section">
+    <h2>Connected Gmail</h2>
+
+    <!-- Safe ngIf + fallback array for *ngFor -->
+    <div *ngIf="emails?.length; else noEmails">
+      <div *ngFor="let email of emails ?? []" class="email-card">
+        <h3>{{ email?.subject }}</h3>
+        <p><strong>From:</strong> {{ email?.from }}</p>
+        <p><strong>Date:</strong> {{ email?.date | date:'short' }}</p>
+        <p>{{ email?.body }}</p>
+      </div>
+    </div>
+
+    <ng-template #noEmails>
+      <p>No emails found. Connect Gmail to get started.</p>
+    </ng-template>
+  </div>
+</div>
