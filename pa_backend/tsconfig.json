@@ -1,0 +1,39 @@
+{
+  // Visit https://aka.ms/tsconfig to read more about this file
+  "compilerOptions": {
+    // File Layout
+    "rootDir": "./src",
+    "outDir": "./dist",
+
+    // Environment Settings
+    "target": "es2020",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "verbatimModuleSyntax": true,
+    "isolatedModules": true,
+
+    // Interop
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+
+    // Other Outputs
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true,
+    "ignoreDeprecations": "6.0",
+
+    // Stricter Typechecking Options
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+
+    // Node types
+    "types": ["node"],
+
+    // Recommended
+    "skipLibCheck": true,
+    "moduleDetection": "force",
+    "noUncheckedSideEffectImports": true,
+    "jsx": "react-jsx"
+  }
+}
