@@ -1,7 +1,6 @@
 import {
   getDOM
-} from "./chunk-TB7IZF3S.js";
-import "./chunk-ZH6LALFQ.js";
+} from "./chunk-MTCSILAZ.js";
 import {
   ApplicationRef,
   ChangeDetectorRef,
@@ -24,8 +23,6 @@ import {
   SkipSelf,
   Subject,
   Version,
-  __spreadProps,
-  __spreadValues,
   afterNextRender,
   booleanAttribute,
   computed,
@@ -51,7 +48,11 @@ import {
   ɵɵdirectiveInject,
   ɵɵgetInheritedFactory,
   ɵɵlistener
-} from "./chunk-GIKWJLYW.js";
+} from "./chunk-36DRJ7VZ.js";
+import {
+  __spreadProps,
+  __spreadValues
+} from "./chunk-GOMI4DH3.js";
 
 // node_modules/@angular/forms/fesm2022/forms.mjs
 var BaseControlValueAccessor = class _BaseControlValueAccessor {
@@ -6219,8 +6220,15 @@ var FormArray = class extends AbstractControl {
    * inserted. When false, no events are emitted.
    */
   push(control, options = {}) {
-    this.controls.push(control);
-    this._registerControl(control);
+    if (Array.isArray(control)) {
+      control.forEach((ctrl) => {
+        this.controls.push(ctrl);
+        this._registerControl(ctrl);
+      });
+    } else {
+      this.controls.push(control);
+      this._registerControl(control);
+    }
     this.updateValueAndValidity({
       emitEvent: options.emitEvent
     });
@@ -6791,7 +6799,7 @@ var UntypedFormBuilder = class _UntypedFormBuilder extends FormBuilder {
     }]
   }], null, null);
 })();
-var VERSION = new Version("20.1.7");
+var VERSION = new Version("20.2.4");
 var FormsModule = class _FormsModule {
   /**
    * @description
@@ -6944,7 +6952,7 @@ export {
 
 @angular/forms/fesm2022/forms.mjs:
   (**
-   * @license Angular v20.1.7
+   * @license Angular v20.2.4
    * (c) 2010-2025 Google LLC. https://angular.io/
    * License: MIT
    *)

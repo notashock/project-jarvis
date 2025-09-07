@@ -1,34 +1,7 @@
-var __defProp = Object.defineProperty;
-var __defProps = Object.defineProperties;
-var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
-var __getOwnPropSymbols = Object.getOwnPropertySymbols;
-var __hasOwnProp = Object.prototype.hasOwnProperty;
-var __propIsEnum = Object.prototype.propertyIsEnumerable;
-var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __spreadValues = (a, b) => {
-  for (var prop in b ||= {})
-    if (__hasOwnProp.call(b, prop))
-      __defNormalProp(a, prop, b[prop]);
-  if (__getOwnPropSymbols)
-    for (var prop of __getOwnPropSymbols(b)) {
-      if (__propIsEnum.call(b, prop))
-        __defNormalProp(a, prop, b[prop]);
-    }
-  return a;
-};
-var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
-var __objRest = (source, exclude) => {
-  var target = {};
-  for (var prop in source)
-    if (__hasOwnProp.call(source, prop) && exclude.indexOf(prop) < 0)
-      target[prop] = source[prop];
-  if (source != null && __getOwnPropSymbols)
-    for (var prop of __getOwnPropSymbols(source)) {
-      if (exclude.indexOf(prop) < 0 && __propIsEnum.call(source, prop))
-        target[prop] = source[prop];
-    }
-  return target;
-};
+import {
+  __spreadProps,
+  __spreadValues
+} from "./chunk-GOMI4DH3.js";
 
 // node_modules/@angular/core/fesm2022/not_found.mjs
 var _currentInjector = void 0;
@@ -3324,7 +3297,7 @@ function tap(observerOrNext, error, complete) {
   }) : identity;
 }
 
-// node_modules/@angular/core/fesm2022/untracked.mjs
+// node_modules/@angular/core/fesm2022/effect.mjs
 function createLinkedSignal(sourceFn, computationFn, equalityFn) {
   const node = Object.create(LINKED_SIGNAL_NODE);
   node.source = sourceFn;
@@ -3406,6 +3379,27 @@ function untracked(nonReactiveReadsFn) {
     return nonReactiveReadsFn();
   } finally {
     setActiveConsumer(prevConsumer);
+  }
+}
+var BASE_EFFECT_NODE = (() => __spreadProps(__spreadValues({}, REACTIVE_NODE), {
+  consumerIsAlwaysLive: true,
+  consumerAllowSignalWrites: true,
+  dirty: true,
+  hasRun: false,
+  kind: "effect"
+}))();
+function runEffect(node) {
+  node.dirty = false;
+  if (node.hasRun && !consumerPollProducersForChange(node)) {
+    return;
+  }
+  node.hasRun = true;
+  const prevNode = consumerBeforeComputation(node);
+  try {
+    node.cleanup();
+    node.fn();
+  } finally {
+    consumerAfterComputation(node, prevNode);
   }
 }
 
@@ -5471,6 +5465,15 @@ function wasLastNodeCreated() {
 }
 function lastNodeWasCreated(flag) {
   _wasLastNodeCreated = flag;
+}
+var registry = { elements: void 0 };
+function setAnimationElementRemovalRegistry(value) {
+  if (registry.elements === void 0) {
+    registry.elements = value;
+  }
+}
+function getAnimationElementRemovalRegistry() {
+  return registry;
 }
 function createInjector(defType, parent = null, additionalProviders = null, name) {
   const injector = createInjectorWithoutInjectorInstances(defType, parent, additionalProviders, name);
@@ -8091,20 +8094,21 @@ var DEFER_BLOCK_ID = "di";
 var DEFER_BLOCK_STATE$1 = "s";
 var DEFER_PARENT_BLOCK_ID = "p";
 var DEFER_HYDRATE_TRIGGERS = "t";
-var IS_HYDRATION_DOM_REUSE_ENABLED = new InjectionToken(typeof ngDevMode === "undefined" || !!ngDevMode ? "IS_HYDRATION_DOM_REUSE_ENABLED" : "");
+var IS_HYDRATION_DOM_REUSE_ENABLED = new InjectionToken(typeof ngDevMode === "undefined" || ngDevMode ? "IS_HYDRATION_DOM_REUSE_ENABLED" : "");
 var PRESERVE_HOST_CONTENT_DEFAULT = false;
-var PRESERVE_HOST_CONTENT = new InjectionToken(typeof ngDevMode === "undefined" || !!ngDevMode ? "PRESERVE_HOST_CONTENT" : "", {
+var PRESERVE_HOST_CONTENT = new InjectionToken(typeof ngDevMode === "undefined" || ngDevMode ? "PRESERVE_HOST_CONTENT" : "", {
   providedIn: "root",
   factory: () => PRESERVE_HOST_CONTENT_DEFAULT
 });
-var IS_I18N_HYDRATION_ENABLED = new InjectionToken(typeof ngDevMode === "undefined" || !!ngDevMode ? "IS_I18N_HYDRATION_ENABLED" : "");
-var IS_EVENT_REPLAY_ENABLED = new InjectionToken(typeof ngDevMode === "undefined" || !!ngDevMode ? "IS_EVENT_REPLAY_ENABLED" : "");
+var IS_I18N_HYDRATION_ENABLED = new InjectionToken(typeof ngDevMode === "undefined" || ngDevMode ? "IS_I18N_HYDRATION_ENABLED" : "");
+var IS_EVENT_REPLAY_ENABLED = new InjectionToken(typeof ngDevMode === "undefined" || ngDevMode ? "IS_EVENT_REPLAY_ENABLED" : "");
 var EVENT_REPLAY_ENABLED_DEFAULT = false;
-var IS_INCREMENTAL_HYDRATION_ENABLED = new InjectionToken(typeof ngDevMode === "undefined" || !!ngDevMode ? "IS_INCREMENTAL_HYDRATION_ENABLED" : "");
+var IS_INCREMENTAL_HYDRATION_ENABLED = new InjectionToken(typeof ngDevMode === "undefined" || ngDevMode ? "IS_INCREMENTAL_HYDRATION_ENABLED" : "");
 var JSACTION_BLOCK_ELEMENT_MAP = new InjectionToken(ngDevMode ? "JSACTION_BLOCK_ELEMENT_MAP" : "", {
   providedIn: "root",
   factory: () => /* @__PURE__ */ new Map()
 });
+var IS_ENABLED_BLOCKING_INITIAL_NAVIGATION = new InjectionToken(typeof ngDevMode === "undefined" || ngDevMode ? "IS_ENABLED_BLOCKING_INITIAL_NAVIGATION" : "");
 var eventListenerOptions = {
   passive: true,
   capture: true
@@ -10665,11 +10669,11 @@ function findDirectiveDefMatches(tView, tNode) {
     3 | 12
     /* TNodeType.AnyContainer */
   );
-  const registry = tView.directiveRegistry;
+  const registry2 = tView.directiveRegistry;
   let matches = null;
-  if (registry) {
-    for (let i = 0; i < registry.length; i++) {
-      const def = registry[i];
+  if (registry2) {
+    for (let i = 0; i < registry2.length; i++) {
+      const def = registry2[i];
       if (isNodeMatchingSelectorList(
         tNode,
         def.selectors,
@@ -10779,7 +10783,12 @@ function handleUncaughtError(lView, error) {
   if (!injector) {
     return;
   }
-  const errorHandler = injector.get(INTERNAL_APPLICATION_ERROR_HANDLER, null);
+  let errorHandler;
+  try {
+    errorHandler = injector.get(INTERNAL_APPLICATION_ERROR_HANDLER, null);
+  } catch {
+    errorHandler = null;
+  }
   errorHandler?.(error);
 }
 function setAllInputsForProperty(tNode, tView, lView, publicName, value) {
@@ -13046,9 +13055,9 @@ function cleanupDehydratedViews(appRef) {
     }
   }
 }
-function cleanupHydratedDeferBlocks(deferBlock, hydratedBlocks, registry, appRef) {
+function cleanupHydratedDeferBlocks(deferBlock, hydratedBlocks, registry2, appRef) {
   if (deferBlock !== null) {
-    registry.cleanup(hydratedBlocks);
+    registry2.cleanup(hydratedBlocks);
     cleanupLContainer(deferBlock.lContainer);
     cleanupDehydratedViews(appRef);
   }
@@ -14147,10 +14156,13 @@ function createRootLViewEnvironment(rootLViewInjector) {
     ngReflect
   };
 }
-function createHostElement(componentDef, render) {
-  const tagName = (componentDef.selectors[0][0] || "div").toLowerCase();
+function createHostElement(componentDef, renderer) {
+  const tagName = inferTagNameFromDefinition(componentDef);
   const namespace = tagName === "svg" ? SVG_NAMESPACE : tagName === "math" ? MATH_ML_NAMESPACE : null;
-  return createElementNode(render, tagName, namespace);
+  return createElementNode(renderer, tagName, namespace);
+}
+function inferTagNameFromDefinition(componentDef) {
+  return (componentDef.selectors[0][0] || "div").toLowerCase();
 }
 var ComponentFactory2 = class extends ComponentFactory$1 {
   componentDef;
@@ -14241,7 +14253,7 @@ var ComponentFactory2 = class extends ComponentFactory$1 {
   }
 };
 function createRootTView(rootSelectorOrNode, componentDef, componentBindings, directives) {
-  const tAttributes = rootSelectorOrNode ? ["ng-version", "20.1.7"] : (
+  const tAttributes = rootSelectorOrNode ? ["ng-version", "20.2.4"] : (
     // Extract attributes and classes from the first selector only to match VE behavior.
     extractAttrsAndClassesFromSelector(componentDef.selectors[0])
   );
@@ -14360,7 +14372,7 @@ var ComponentRef2 = class extends ComponentRef$1 {
     if (ngDevMode && !hasSetInput) {
       const cmpNameForError = stringifyForError(this.componentType);
       let message = `Can't set value of the '${name}' input on the '${cmpNameForError}' component. `;
-      message += `Make sure that the '${name}' property is declared as an input using the @Input() decorator or the input() function.`;
+      message += `Make sure that the '${name}' property is declared as an input using the input() or model() function or the @Input() decorator.`;
       reportUnknownPropertyError(message);
     }
   }
@@ -17498,7 +17510,7 @@ function getDeferBlocks(node) {
 }
 function findDeferBlocks(node, lView, results) {
   const viewInjector = lView[INJECTOR];
-  const registry = viewInjector.get(DEHYDRATED_BLOCK_REGISTRY, null, { optional: true });
+  const registry2 = viewInjector.get(DEHYDRATED_BLOCK_REGISTRY, null, { optional: true });
   const blocks = [];
   getDeferBlocks$1(lView, blocks);
   const transferState = viewInjector.get(TransferState);
@@ -17512,7 +17524,7 @@ function findDeferBlocks(node, lView, results) {
     const tDetails = details.tDetails;
     const renderedLView = getRendererLView(details);
     const rootNodes = [];
-    const hydrationState = inferHydrationState(tDetails, lDetails, registry);
+    const hydrationState = inferHydrationState(tDetails, lDetails, registry2);
     if (renderedLView !== null) {
       collectNativeNodes(renderedLView[TVIEW], renderedLView, renderedLView[TVIEW].firstChild, rootNodes);
     } else if (hydrationState === "dehydrated") {
@@ -17566,14 +17578,14 @@ function stringifyState(state) {
       throw new Error(`Unrecognized state ${state}`);
   }
 }
-function inferHydrationState(tDetails, lDetails, registry) {
-  if (registry === null || lDetails[SSR_UNIQUE_ID] === null || tDetails.hydrateTriggers === null || tDetails.hydrateTriggers.has(
+function inferHydrationState(tDetails, lDetails, registry2) {
+  if (registry2 === null || lDetails[SSR_UNIQUE_ID] === null || tDetails.hydrateTriggers === null || tDetails.hydrateTriggers.has(
     7
     /* DeferBlockTrigger.Never */
   )) {
     return "not-configured";
   }
-  return registry.has(lDetails[SSR_UNIQUE_ID]) ? "dehydrated" : "hydrated";
+  return registry2.has(lDetails[SSR_UNIQUE_ID]) ? "dehydrated" : "hydrated";
 }
 function getRendererLView(details) {
   if (details.lContainer.length <= CONTAINER_HEADER_OFFSET) {
@@ -18083,6 +18095,18 @@ function enableProfiling() {
   return () => {
   };
 }
+function getTransferState(injector) {
+  const doc = getDocument();
+  const appId = injector.get(APP_ID);
+  const transferState = retrieveTransferredState(doc, appId);
+  const filteredEntries = {};
+  for (const [key, value] of Object.entries(transferState)) {
+    if (!isInternalHydrationTransferStateKey(key)) {
+      filteredEntries[key] = value;
+    }
+  }
+  return filteredEntries;
+}
 var GLOBAL_PUBLISH_EXPANDO_KEY = "ng";
 var globalUtilsFunctions = {
   /**
@@ -18097,6 +18121,7 @@ var globalUtilsFunctions = {
   "ɵsetProfiler": setProfiler,
   "ɵgetSignalGraph": getSignalGraph,
   "ɵgetDeferBlocks": getDeferBlocks,
+  "ɵgetTransferState": getTransferState,
   "getDirectiveMetadata": getDirectiveMetadata$1,
   "getComponent": getComponent,
   "getContext": getContext,
@@ -18145,15 +18170,15 @@ var Testability = class _Testability {
   _callbacks = [];
   _taskTrackingZone = null;
   _destroyRef;
-  constructor(_ngZone, registry, testabilityGetter) {
+  constructor(_ngZone, registry2, testabilityGetter) {
     this._ngZone = _ngZone;
-    this.registry = registry;
+    this.registry = registry2;
     if (isInInjectionContext()) {
       this._destroyRef = inject2(DestroyRef, { optional: true }) ?? void 0;
     }
     if (!_testabilityGetter) {
       setTestabilityGetter(testabilityGetter);
-      testabilityGetter.addToWindow(registry);
+      testabilityGetter.addToWindow(registry2);
     }
     this._watchAngularEvents();
     _ngZone.run(() => {
@@ -19119,9 +19144,9 @@ function cleanupRemainingHydrationQueue(hydrationQueue, dehydratedBlockRegistry)
   }
   dehydratedBlockRegistry.cleanup(hydrationQueue);
 }
-function populateHydratingStateForQueue(registry, queue2) {
+function populateHydratingStateForQueue(registry2, queue2) {
   for (let blockId of queue2) {
-    registry.hydrating.set(blockId, Promise.withResolvers());
+    registry2.hydrating.set(blockId, Promise.withResolvers());
   }
 }
 function nextRender(injector) {
@@ -19210,28 +19235,28 @@ function processAndInitTriggers(injector, blockData, nodes) {
 }
 function setIdleTriggers(injector, elementTriggers) {
   for (const elementTrigger of elementTriggers) {
-    const registry = injector.get(DEHYDRATED_BLOCK_REGISTRY);
+    const registry2 = injector.get(DEHYDRATED_BLOCK_REGISTRY);
     const onInvoke = () => triggerHydrationFromBlockName(injector, elementTrigger.blockName);
     const cleanupFn = onIdle(onInvoke, injector);
-    registry.addCleanupFn(elementTrigger.blockName, cleanupFn);
+    registry2.addCleanupFn(elementTrigger.blockName, cleanupFn);
   }
 }
 function setViewportTriggers(injector, elementTriggers) {
   if (elementTriggers.length > 0) {
-    const registry = injector.get(DEHYDRATED_BLOCK_REGISTRY);
+    const registry2 = injector.get(DEHYDRATED_BLOCK_REGISTRY);
     for (let elementTrigger of elementTriggers) {
       const cleanupFn = onViewportWrapper(elementTrigger.el, () => triggerHydrationFromBlockName(injector, elementTrigger.blockName), injector);
-      registry.addCleanupFn(elementTrigger.blockName, cleanupFn);
+      registry2.addCleanupFn(elementTrigger.blockName, cleanupFn);
     }
   }
 }
 function setTimerTriggers(injector, elementTriggers) {
   for (const elementTrigger of elementTriggers) {
-    const registry = injector.get(DEHYDRATED_BLOCK_REGISTRY);
+    const registry2 = injector.get(DEHYDRATED_BLOCK_REGISTRY);
     const onInvoke = () => triggerHydrationFromBlockName(injector, elementTrigger.blockName);
     const timerFn = onTimer(elementTrigger.delay);
     const cleanupFn = timerFn(onInvoke, injector);
-    registry.addCleanupFn(elementTrigger.blockName, cleanupFn);
+    registry2.addCleanupFn(elementTrigger.blockName, cleanupFn);
   }
 }
 function setImmediateTriggers(injector, elementTriggers) {
@@ -19313,15 +19338,15 @@ function ɵɵdefer(index, primaryTmplIndex, dependencyResolverFn, loadingTmplInd
     // HYDRATE_TRIGGER_CLEANUP_FNS
   ];
   setLDeferBlockDetails(lView, adjustedIndex, lDetails);
-  let registry = null;
+  let registry2 = null;
   if (ssrUniqueId !== null) {
-    registry = injector.get(DEHYDRATED_BLOCK_REGISTRY);
-    registry.add(ssrUniqueId, { lView, tNode, lContainer });
+    registry2 = injector.get(DEHYDRATED_BLOCK_REGISTRY);
+    registry2.add(ssrUniqueId, { lView, tNode, lContainer });
   }
   const onLViewDestroy = () => {
     invokeAllTriggerCleanupFns(lDetails);
     if (ssrUniqueId !== null) {
-      registry?.cleanup([ssrUniqueId]);
+      registry2?.cleanup([ssrUniqueId]);
     }
   };
   storeTriggerCleanupFn(0, lDetails, () => removeLViewOnDestroy(lView, onLViewDestroy));
@@ -19719,6 +19744,34 @@ function ɵɵdeferHydrateOnViewport() {
     triggerDeferBlock(2, lView, tNode);
   }
 }
+var ARIA_PREFIX = "aria";
+function ɵɵariaProperty(name, value) {
+  const lView = getLView();
+  const bindingIndex = nextBindingIndex();
+  if (bindingUpdated(lView, bindingIndex, value)) {
+    const tView = getTView();
+    const tNode = getSelectedTNode();
+    const hasSetInput = setAllInputsForProperty(tNode, tView, lView, name, value);
+    if (hasSetInput) {
+      isComponentHost(tNode) && markDirtyIfOnPush(lView, tNode.index);
+      ngDevMode && setNgReflectProperties(lView, tView, tNode, name, value);
+    } else {
+      ngDevMode && assertTNodeType(
+        tNode,
+        2
+        /* TNodeType.Element */
+      );
+      const element = getNativeByTNode(tNode, lView);
+      const attributeName = ariaAttrName(name);
+      setElementAttribute(lView[RENDERER], element, null, tNode.value, attributeName, value, null);
+    }
+    ngDevMode && storePropertyBindingMetadata(tView.data, tNode, name, bindingIndex);
+  }
+  return ɵɵariaProperty;
+}
+function ariaAttrName(name) {
+  return name.charAt(ARIA_PREFIX.length) !== "-" ? ARIA_PREFIX + "-" + name.slice(ARIA_PREFIX.length).toLowerCase() : name;
+}
 function ɵɵattribute(name, value, sanitizer, namespace) {
   const lView = getLView();
   const bindingIndex = nextBindingIndex();
@@ -19729,6 +19782,492 @@ function ɵɵattribute(name, value, sanitizer, namespace) {
     ngDevMode && storePropertyBindingMetadata(tView.data, tNode, "attr." + name, bindingIndex);
   }
   return ɵɵattribute;
+}
+var ANIMATIONS_DISABLED = new InjectionToken(typeof ngDevMode !== "undefined" && ngDevMode ? "AnimationsDisabled" : "", {
+  providedIn: "root",
+  factory: () => false
+});
+var MAX_ANIMATION_TIMEOUT = new InjectionToken(typeof ngDevMode !== "undefined" && ngDevMode ? "MaxAnimationTimeout" : "", {
+  providedIn: "root",
+  factory: () => MAX_ANIMATION_TIMEOUT_DEFAULT
+});
+var MAX_ANIMATION_TIMEOUT_DEFAULT = 4e3;
+var ElementRegistry = class {
+  outElements = /* @__PURE__ */ new WeakMap();
+  remove(el) {
+    this.outElements.delete(el);
+  }
+  /** Used when animate.leave is only applying classes */
+  trackClasses(details, classes) {
+    const classList = getClassListFromValue(classes);
+    if (!classList)
+      return;
+    for (let klass of classList) {
+      details.classes?.add(klass);
+    }
+  }
+  /** Used when animate.leave is applying classes via a bound attribute
+   *  which requires resolving the binding function at the right time
+   *  to get the proper class list. There may be multiple resolvers due
+   *  to composition via host bindings.
+   */
+  trackResolver(details, resolver) {
+    if (!details.classFns) {
+      details.classFns = [resolver];
+    } else {
+      details.classFns.push(resolver);
+    }
+  }
+  /** Used when `animate.leave` is using the function signature and will have a
+   *  callback function, rather than a list of classes.
+   */
+  addCallback(el, value, animateWrapperFn) {
+    const details = this.outElements.get(el) ?? {
+      classes: null,
+      animateFn: () => {
+      },
+      isEventBinding: true
+    };
+    details.animateFn = animateWrapperFn(el, value);
+    this.outElements.set(el, details);
+  }
+  /** Used when `animate.leave` is using classes. */
+  add(el, value, animateWrapperFn) {
+    const details = this.outElements.get(el) ?? {
+      classes: /* @__PURE__ */ new Set(),
+      animateFn: () => {
+      },
+      isEventBinding: false
+    };
+    if (typeof value === "function") {
+      this.trackResolver(details, value);
+    } else {
+      this.trackClasses(details, value);
+    }
+    details.animateFn = animateWrapperFn(el, details.classes, details.classFns);
+    this.outElements.set(el, details);
+  }
+  has(el) {
+    return this.outElements.has(el);
+  }
+  /** This is called by the dom renderer to actually initiate the animation
+   *  using the animateFn stored in the registry. The DOM renderer passes in
+   *  the removal function to be fired off when the animation finishes.
+   */
+  animate(el, removeFn, maxAnimationTimeout) {
+    if (!this.outElements.has(el))
+      return removeFn();
+    const details = this.outElements.get(el);
+    let timeoutId;
+    let called = false;
+    const remove2 = () => {
+      if (called)
+        return;
+      called = true;
+      clearTimeout(timeoutId);
+      this.remove(el);
+      removeFn();
+    };
+    if (details.isEventBinding) {
+      timeoutId = setTimeout(remove2, maxAnimationTimeout);
+    }
+    details.animateFn(remove2);
+  }
+};
+function getClassListFromValue(value) {
+  const classes = typeof value === "function" ? value() : value;
+  let classList = Array.isArray(classes) ? classes : null;
+  if (typeof classes === "string") {
+    classList = classes.trim().split(/\s+/).filter((k) => k);
+  }
+  return classList;
+}
+function parseCssTimeUnitsToMs(value) {
+  const multiplier = value.toLowerCase().indexOf("ms") > -1 ? 1 : 1e3;
+  return parseFloat(value) * multiplier;
+}
+function parseCssPropertyValue(computedStyle, name) {
+  const value = computedStyle.getPropertyValue(name);
+  return value.split(",").map((part) => part.trim());
+}
+function getLongestComputedTransition(computedStyle) {
+  const transitionedProperties = parseCssPropertyValue(computedStyle, "transition-property");
+  const rawDurations = parseCssPropertyValue(computedStyle, "transition-duration");
+  const rawDelays = parseCssPropertyValue(computedStyle, "transition-delay");
+  const longest = { propertyName: "", duration: 0, animationName: void 0 };
+  for (let i = 0; i < transitionedProperties.length; i++) {
+    const duration = parseCssTimeUnitsToMs(rawDelays[i]) + parseCssTimeUnitsToMs(rawDurations[i]);
+    if (duration > longest.duration) {
+      longest.propertyName = transitionedProperties[i];
+      longest.duration = duration;
+    }
+  }
+  return longest;
+}
+function getLongestComputedAnimation(computedStyle) {
+  const rawNames = parseCssPropertyValue(computedStyle, "animation-name");
+  const rawDelays = parseCssPropertyValue(computedStyle, "animation-delay");
+  const rawDurations = parseCssPropertyValue(computedStyle, "animation-duration");
+  const longest = { animationName: "", propertyName: void 0, duration: 0 };
+  for (let i = 0; i < rawNames.length; i++) {
+    const duration = parseCssTimeUnitsToMs(rawDelays[i]) + parseCssTimeUnitsToMs(rawDurations[i]);
+    if (duration > longest.duration) {
+      longest.animationName = rawNames[i];
+      longest.duration = duration;
+    }
+  }
+  return longest;
+}
+function isShorterThanExistingAnimation(existing, longest) {
+  return existing !== void 0 && existing.duration > longest.duration;
+}
+function longestExists(longest) {
+  return (longest.animationName != void 0 || longest.propertyName != void 0) && longest.duration > 0;
+}
+function determineLongestAnimationFromComputedStyles(el, animationsMap) {
+  const computedStyle = getComputedStyle(el);
+  const longestAnimation = getLongestComputedAnimation(computedStyle);
+  const longestTransition = getLongestComputedTransition(computedStyle);
+  const longest = longestAnimation.duration > longestTransition.duration ? longestAnimation : longestTransition;
+  if (isShorterThanExistingAnimation(animationsMap.get(el), longest))
+    return;
+  if (longestExists(longest)) {
+    animationsMap.set(el, longest);
+  }
+}
+function determineLongestAnimation(el, animationsMap, areAnimationSupported2) {
+  if (!areAnimationSupported2)
+    return;
+  const animations = el.getAnimations();
+  return animations.length === 0 ? (
+    // fallback to computed styles if getAnimations is empty. This would happen if styles are
+    // currently recalculating due to a reflow happening elsewhere.
+    determineLongestAnimationFromComputedStyles(el, animationsMap)
+  ) : determineLongestAnimationFromElementAnimations(el, animationsMap, animations);
+}
+function determineLongestAnimationFromElementAnimations(el, animationsMap, animations) {
+  let longest = {
+    animationName: void 0,
+    propertyName: void 0,
+    duration: 0
+  };
+  for (const animation of animations) {
+    const timing = animation.effect?.getTiming();
+    const animDuration = typeof timing?.duration === "number" ? timing.duration : 0;
+    let duration = (timing?.delay ?? 0) + animDuration;
+    let propertyName;
+    let animationName;
+    if (animation.animationName) {
+      animationName = animation.animationName;
+    } else {
+      propertyName = animation.transitionProperty;
+    }
+    if (duration >= longest.duration) {
+      longest = { animationName, propertyName, duration };
+    }
+  }
+  if (isShorterThanExistingAnimation(animationsMap.get(el), longest))
+    return;
+  if (longestExists(longest)) {
+    animationsMap.set(el, longest);
+  }
+}
+var DEFAULT_ANIMATIONS_DISABLED = false;
+var areAnimationSupported = typeof document !== "undefined" && // tslint:disable-next-line:no-toplevel-property-access
+typeof document?.documentElement?.getAnimations === "function";
+function areAnimationsDisabled(lView) {
+  const injector = lView[INJECTOR];
+  return injector.get(ANIMATIONS_DISABLED, DEFAULT_ANIMATIONS_DISABLED);
+}
+function setupElementRegistryCleanup(elementRegistry, lView, tView, nativeElement) {
+  if (lView[FLAGS] & 8) {
+    storeCleanupWithContext(tView, lView, nativeElement, (elToClean) => {
+      elementRegistry.elements.remove(elToClean);
+    });
+  }
+}
+function cleanupEnterClassData(element) {
+  const elementData = enterClassMap.get(element);
+  if (elementData) {
+    for (const fn of elementData.cleanupFns) {
+      fn();
+    }
+    enterClassMap.delete(element);
+  }
+  longestAnimations.delete(element);
+}
+var noOpAnimationComplete = () => {
+};
+var enterClassMap = /* @__PURE__ */ new WeakMap();
+var longestAnimations = /* @__PURE__ */ new WeakMap();
+var leavingNodes = /* @__PURE__ */ new WeakMap();
+function clearLeavingNodes(tNode, el) {
+  const nodes = leavingNodes.get(tNode);
+  if (nodes && nodes.length > 0) {
+    const ix = nodes.findIndex((node) => node === el);
+    if (ix > -1)
+      nodes.splice(ix, 1);
+  }
+  if (nodes?.length === 0) {
+    leavingNodes.delete(tNode);
+  }
+}
+function cancelLeavingNodes(tNode, lView) {
+  const leavingEl = leavingNodes.get(tNode)?.shift();
+  const lContainer = lView[DECLARATION_LCONTAINER];
+  if (lContainer) {
+    const beforeNode = getBeforeNodeForView(tNode.index, lContainer);
+    const previousNode = beforeNode?.previousSibling;
+    if (leavingEl && previousNode && leavingEl === previousNode) {
+      leavingEl.dispatchEvent(new CustomEvent("animationend", { detail: { cancel: true } }));
+    }
+  }
+}
+function trackLeavingNodes(tNode, el) {
+  if (leavingNodes.has(tNode)) {
+    leavingNodes.get(tNode)?.push(el);
+  } else {
+    leavingNodes.set(tNode, [el]);
+  }
+}
+function ɵɵanimateEnter(value) {
+  performanceMarkFeature("NgAnimateEnter");
+  if (!areAnimationSupported) {
+    return ɵɵanimateEnter;
+  }
+  ngDevMode && assertAnimationTypes(value, "animate.enter");
+  const lView = getLView();
+  if (areAnimationsDisabled(lView)) {
+    return ɵɵanimateEnter;
+  }
+  const tNode = getCurrentTNode();
+  const nativeElement = getNativeByTNode(tNode, lView);
+  ngDevMode && assertElementNodes(nativeElement, "animate.enter");
+  const renderer = lView[RENDERER];
+  const ngZone = lView[INJECTOR].get(NgZone);
+  const activeClasses = getClassListFromValue(value);
+  const cleanupFns = [];
+  const handleAnimationStart = (event) => {
+    const eventName = event instanceof AnimationEvent ? "animationend" : "transitionend";
+    ngZone.runOutsideAngular(() => {
+      cleanupFns.push(renderer.listen(nativeElement, eventName, handleInAnimationEnd));
+    });
+  };
+  const handleInAnimationEnd = (event) => {
+    animationEnd(event, nativeElement, renderer);
+  };
+  if (activeClasses && activeClasses.length > 0) {
+    ngZone.runOutsideAngular(() => {
+      cleanupFns.push(renderer.listen(nativeElement, "animationstart", handleAnimationStart));
+      cleanupFns.push(renderer.listen(nativeElement, "transitionstart", handleAnimationStart));
+    });
+    cancelLeavingNodes(tNode, lView);
+    trackEnterClasses(nativeElement, activeClasses, cleanupFns);
+    for (const klass of activeClasses) {
+      renderer.addClass(nativeElement, klass);
+    }
+    ngZone.runOutsideAngular(() => {
+      requestAnimationFrame(() => {
+        determineLongestAnimation(nativeElement, longestAnimations, areAnimationSupported);
+        if (!longestAnimations.has(nativeElement)) {
+          for (const klass of activeClasses) {
+            renderer.removeClass(nativeElement, klass);
+          }
+          cleanupEnterClassData(nativeElement);
+        }
+      });
+    });
+  }
+  return ɵɵanimateEnter;
+}
+function trackEnterClasses(el, classList, cleanupFns) {
+  const elementData = enterClassMap.get(el);
+  if (elementData) {
+    for (const klass of classList) {
+      elementData.classList.push(klass);
+    }
+    for (const fn of cleanupFns) {
+      elementData.cleanupFns.push(fn);
+    }
+  } else {
+    enterClassMap.set(el, { classList, cleanupFns });
+  }
+}
+function ɵɵanimateEnterListener(value) {
+  performanceMarkFeature("NgAnimateEnter");
+  if (!areAnimationSupported) {
+    return ɵɵanimateEnterListener;
+  }
+  ngDevMode && assertAnimationTypes(value, "animate.enter");
+  const lView = getLView();
+  if (areAnimationsDisabled(lView)) {
+    return ɵɵanimateEnterListener;
+  }
+  const tNode = getCurrentTNode();
+  const nativeElement = getNativeByTNode(tNode, lView);
+  ngDevMode && assertElementNodes(nativeElement, "animate.enter");
+  cancelLeavingNodes(tNode, lView);
+  value.call(lView[CONTEXT], { target: nativeElement, animationComplete: noOpAnimationComplete });
+  return ɵɵanimateEnterListener;
+}
+function ɵɵanimateLeave(value) {
+  performanceMarkFeature("NgAnimateLeave");
+  if (!areAnimationSupported) {
+    return ɵɵanimateLeave;
+  }
+  ngDevMode && assertAnimationTypes(value, "animate.leave");
+  const lView = getLView();
+  const animationsDisabled = areAnimationsDisabled(lView);
+  if (animationsDisabled) {
+    return ɵɵanimateLeave;
+  }
+  const tView = getTView();
+  const tNode = getCurrentTNode();
+  const nativeElement = getNativeByTNode(tNode, lView);
+  ngDevMode && assertElementNodes(nativeElement, "animate.leave");
+  const renderer = lView[RENDERER];
+  const elementRegistry = getAnimationElementRemovalRegistry();
+  ngDevMode && assertDefined(elementRegistry.elements, "Expected `ElementRegistry` to be present in animations subsystem");
+  const ngZone = lView[INJECTOR].get(NgZone);
+  const animate = (el, value2, resolvers) => {
+    return (removalFn) => {
+      animateLeaveClassRunner(el, tNode, getClassList(value2, resolvers), removalFn, renderer, animationsDisabled, ngZone);
+    };
+  };
+  setupElementRegistryCleanup(elementRegistry, lView, tView, nativeElement);
+  elementRegistry.elements.add(nativeElement, value, animate);
+  return ɵɵanimateLeave;
+}
+function ɵɵanimateLeaveListener(value) {
+  performanceMarkFeature("NgAnimateLeave");
+  if (!areAnimationSupported) {
+    return ɵɵanimateLeaveListener;
+  }
+  ngDevMode && assertAnimationTypes(value, "animate.leave");
+  const lView = getLView();
+  const tNode = getCurrentTNode();
+  const tView = getTView();
+  const nativeElement = getNativeByTNode(tNode, lView);
+  ngDevMode && assertElementNodes(nativeElement, "animate.leave");
+  const elementRegistry = getAnimationElementRemovalRegistry();
+  ngDevMode && assertDefined(elementRegistry.elements, "Expected `ElementRegistry` to be present in animations subsystem");
+  const renderer = lView[RENDERER];
+  const animationsDisabled = areAnimationsDisabled(lView);
+  const ngZone = lView[INJECTOR].get(NgZone);
+  const animate = (_el, value2) => {
+    return (removeFn) => {
+      if (animationsDisabled) {
+        removeFn();
+      } else {
+        const event = {
+          target: nativeElement,
+          animationComplete: () => {
+            clearLeavingNodes(tNode, _el);
+            removeFn();
+          }
+        };
+        trackLeavingNodes(tNode, _el);
+        ngZone.runOutsideAngular(() => {
+          renderer.listen(_el, "animationend", () => removeFn(), { once: true });
+        });
+        value2.call(lView[CONTEXT], event);
+      }
+    };
+  };
+  setupElementRegistryCleanup(elementRegistry, lView, tView, nativeElement);
+  elementRegistry.elements.addCallback(nativeElement, value, animate);
+  return ɵɵanimateLeaveListener;
+}
+function getClassList(value, resolvers) {
+  const classList = new Set(value);
+  if (resolvers && resolvers.length) {
+    for (const resolverFn of resolvers) {
+      const resolvedValue = getClassListFromValue(resolverFn);
+      if (resolvedValue) {
+        for (const rv of resolvedValue) {
+          classList.add(rv);
+        }
+      }
+    }
+  }
+  return classList;
+}
+function cancelAnimationsIfRunning(element, renderer) {
+  if (!areAnimationSupported)
+    return;
+  const elementData = enterClassMap.get(element);
+  if (elementData && elementData.classList.length > 0 && elementHasClassList(element, elementData.classList)) {
+    for (const klass of elementData.classList) {
+      renderer.removeClass(element, klass);
+    }
+  }
+  cleanupEnterClassData(element);
+}
+function elementHasClassList(element, classList) {
+  for (const className of classList) {
+    if (element.classList.contains(className))
+      return true;
+  }
+  return false;
+}
+function isLongestAnimation(event, nativeElement) {
+  const longestAnimation = longestAnimations.get(nativeElement);
+  return nativeElement === event.target && longestAnimation !== void 0 && (longestAnimation.animationName !== void 0 && event.animationName === longestAnimation.animationName || longestAnimation.propertyName !== void 0 && event.propertyName === longestAnimation.propertyName);
+}
+function animationEnd(event, nativeElement, renderer) {
+  const elementData = enterClassMap.get(nativeElement);
+  if (!elementData)
+    return;
+  if (isLongestAnimation(event, nativeElement)) {
+    event.stopImmediatePropagation();
+    for (const klass of elementData.classList) {
+      renderer.removeClass(nativeElement, klass);
+    }
+    cleanupEnterClassData(nativeElement);
+  }
+}
+function assertAnimationTypes(value, instruction) {
+  if (value == null || typeof value !== "string" && typeof value !== "function") {
+    throw new RuntimeError(650, `'${instruction}' value must be a string of CSS classes or an animation function, got ${stringify(value)}`);
+  }
+}
+function assertElementNodes(nativeElement, instruction) {
+  if (nativeElement.nodeType !== Node.ELEMENT_NODE) {
+    throw new RuntimeError(650, `'${instruction}' can only be used on an element node, got ${stringify(nativeElement.nodeType)}`);
+  }
+}
+function animateLeaveClassRunner(el, tNode, classList, finalRemoveFn, renderer, animationsDisabled, ngZone) {
+  if (animationsDisabled) {
+    longestAnimations.delete(el);
+    finalRemoveFn();
+    return;
+  }
+  cancelAnimationsIfRunning(el, renderer);
+  const handleOutAnimationEnd = (event) => {
+    if (event instanceof CustomEvent || isLongestAnimation(event, el)) {
+      event.stopImmediatePropagation();
+      longestAnimations.delete(el);
+      clearLeavingNodes(tNode, el);
+      finalRemoveFn();
+    }
+  };
+  ngZone.runOutsideAngular(() => {
+    renderer.listen(el, "animationend", handleOutAnimationEnd);
+    renderer.listen(el, "transitionend", handleOutAnimationEnd);
+  });
+  trackLeavingNodes(tNode, el);
+  for (const item of classList) {
+    renderer.addClass(el, item);
+  }
+  ngZone.runOutsideAngular(() => {
+    requestAnimationFrame(() => {
+      determineLongestAnimation(el, longestAnimations, areAnimationSupported);
+      if (!longestAnimations.has(el)) {
+        clearLeavingNodes(tNode, el);
+        finalRemoveFn();
+      }
+    });
+  });
 }
 function ɵɵcomponentInstance() {
   const instance = getLView()[DECLARATION_COMPONENT_VIEW][CONTEXT];
@@ -22871,6 +23410,11 @@ function ɵɵExternalStylesFeature(styleUrls) {
     };
   };
 }
+function ɵɵAnimationsFeature() {
+  return () => {
+    setAnimationElementRemovalRegistry(new ElementRegistry());
+  };
+}
 function ɵɵsetComponentScope(type, directives, pipes) {
   const def = type.ɵcmp;
   def.directiveDefs = extractDefListOrFactory(directives, extractDirectiveDef);
@@ -23008,16 +23552,16 @@ function ɵɵpipe(index, pipeName) {
     ngDevMode && setInjectorProfilerContext(previousInjectorProfilerContext);
   }
 }
-function getPipeDef2(name, registry) {
-  if (registry) {
+function getPipeDef2(name, registry2) {
+  if (registry2) {
     if (ngDevMode) {
-      const pipes = registry.filter((pipe2) => pipe2.name === name);
+      const pipes = registry2.filter((pipe2) => pipe2.name === name);
       if (pipes.length > 1) {
         console.warn(formatRuntimeError(313, getMultipleMatchingPipesMessage(name)));
       }
     }
-    for (let i = registry.length - 1; i >= 0; i--) {
-      const pipeDef = registry[i];
+    for (let i = registry2.length - 1; i >= 0; i--) {
+      const pipeDef = registry2[i];
       if (name === pipeDef.name) {
         return pipeDef;
       }
@@ -23255,6 +23799,10 @@ function resetProjectionState(tNode) {
   }
 }
 var angularCoreEnv = /* @__PURE__ */ (() => ({
+  "ɵɵanimateEnter": ɵɵanimateEnter,
+  "ɵɵanimateEnterListener": ɵɵanimateEnterListener,
+  "ɵɵanimateLeave": ɵɵanimateLeave,
+  "ɵɵanimateLeaveListener": ɵɵanimateLeaveListener,
   "ɵɵattribute": ɵɵattribute,
   "ɵɵdefineComponent": ɵɵdefineComponent,
   "ɵɵdefineDirective": ɵɵdefineDirective,
@@ -23276,6 +23824,7 @@ var angularCoreEnv = /* @__PURE__ */ (() => ({
   "ɵɵCopyDefinitionFeature": ɵɵCopyDefinitionFeature,
   "ɵɵInheritDefinitionFeature": ɵɵInheritDefinitionFeature,
   "ɵɵExternalStylesFeature": ɵɵExternalStylesFeature,
+  "ɵɵAnimationsFeature": ɵɵAnimationsFeature,
   "ɵɵnextContext": ɵɵnextContext,
   "ɵɵnamespaceHTML": ɵɵnamespaceHTML,
   "ɵɵnamespaceMathML": ɵɵnamespaceMathML,
@@ -23319,6 +23868,7 @@ var angularCoreEnv = /* @__PURE__ */ (() => ({
   "ɵɵpipeBindV": ɵɵpipeBindV,
   "ɵɵprojectionDef": ɵɵprojectionDef,
   "ɵɵdomProperty": ɵɵdomProperty,
+  "ɵɵariaProperty": ɵɵariaProperty,
   "ɵɵproperty": ɵɵproperty,
   "ɵɵpipe": ɵɵpipe,
   "ɵɵqueryRefresh": ɵɵqueryRefresh,
@@ -25183,36 +25733,22 @@ function effect(effectFn, options) {
   }
   return effectRef;
 }
-var BASE_EFFECT_NODE = (() => __spreadProps(__spreadValues({}, REACTIVE_NODE), {
-  consumerIsAlwaysLive: true,
-  consumerAllowSignalWrites: true,
-  dirty: true,
-  hasRun: false,
+var EFFECT_NODE = (() => __spreadProps(__spreadValues({}, BASE_EFFECT_NODE), {
   cleanupFns: void 0,
   zone: null,
-  kind: "effect",
   onDestroyFn: noop2,
   run() {
-    this.dirty = false;
     if (ngDevMode && isInNotificationPhase()) {
       throw new Error(`Schedulers cannot synchronously execute watches while scheduling.`);
     }
-    if (this.hasRun && !consumerPollProducersForChange(this)) {
-      return;
-    }
-    this.hasRun = true;
-    const registerCleanupFn = (cleanupFn) => (this.cleanupFns ??= []).push(cleanupFn);
-    const prevNode = consumerBeforeComputation(this);
     const prevRefreshingViews = setIsRefreshingViews(false);
     try {
-      this.maybeCleanup();
-      this.fn(registerCleanupFn);
+      runEffect(this);
     } finally {
       setIsRefreshingViews(prevRefreshingViews);
-      consumerAfterComputation(this, prevNode);
     }
   },
-  maybeCleanup() {
+  cleanup() {
     if (!this.cleanupFns?.length) {
       return;
     }
@@ -25227,7 +25763,7 @@ var BASE_EFFECT_NODE = (() => __spreadProps(__spreadValues({}, REACTIVE_NODE), {
     }
   }
 }))();
-var ROOT_EFFECT_NODE = (() => __spreadProps(__spreadValues({}, BASE_EFFECT_NODE), {
+var ROOT_EFFECT_NODE = (() => __spreadProps(__spreadValues({}, EFFECT_NODE), {
   consumerMarkedDirty() {
     this.scheduler.schedule(this);
     this.notifier.notify(
@@ -25238,11 +25774,11 @@ var ROOT_EFFECT_NODE = (() => __spreadProps(__spreadValues({}, BASE_EFFECT_NODE)
   destroy() {
     consumerDestroy(this);
     this.onDestroyFn();
-    this.maybeCleanup();
+    this.cleanup();
     this.scheduler.remove(this);
   }
 }))();
-var VIEW_EFFECT_NODE = (() => __spreadProps(__spreadValues({}, BASE_EFFECT_NODE), {
+var VIEW_EFFECT_NODE = (() => __spreadProps(__spreadValues({}, EFFECT_NODE), {
   consumerMarkedDirty() {
     this.view[FLAGS] |= 8192;
     markAncestorsForTraversal(this.view);
@@ -25254,7 +25790,7 @@ var VIEW_EFFECT_NODE = (() => __spreadProps(__spreadValues({}, BASE_EFFECT_NODE)
   destroy() {
     consumerDestroy(this);
     this.onDestroyFn();
-    this.maybeCleanup();
+    this.cleanup();
     this.view[EFFECTS]?.delete(this);
   }
 }))();
@@ -25263,7 +25799,7 @@ function createViewEffect(view, notifier, fn) {
   node.view = view;
   node.zone = typeof Zone !== "undefined" ? Zone.current : null;
   node.notifier = notifier;
-  node.fn = fn;
+  node.fn = createEffectFn(node, fn);
   view[EFFECTS] ??= /* @__PURE__ */ new Set();
   view[EFFECTS].add(node);
   node.consumerMarkedDirty(node);
@@ -25271,7 +25807,7 @@ function createViewEffect(view, notifier, fn) {
 }
 function createRootEffect(fn, scheduler, notifier) {
   const node = Object.create(ROOT_EFFECT_NODE);
-  node.fn = fn;
+  node.fn = createEffectFn(node, fn);
   node.scheduler = scheduler;
   node.notifier = notifier;
   node.zone = typeof Zone !== "undefined" ? Zone.current : null;
@@ -25281,6 +25817,11 @@ function createRootEffect(fn, scheduler, notifier) {
     /* NotificationSource.RootEffect */
   );
   return node;
+}
+function createEffectFn(node, fn) {
+  return () => {
+    fn((cleanupFn) => (node.cleanupFns ??= []).push(cleanupFn));
+  };
 }
 var identityFn = (v) => v;
 function linkedSignal(optionsOrComputation, options) {
@@ -26943,7 +27484,7 @@ var Version = class {
     this.patch = parts.slice(2).join(".");
   }
 };
-var VERSION = new Version("20.1.7");
+var VERSION = new Version("20.2.4");
 function compileNgModuleFactory(injector, options, moduleType) {
   ngDevMode && assertNgModuleType(moduleType);
   const moduleFactory = new NgModuleFactory2(moduleType);
@@ -28353,11 +28894,10 @@ var IterableDiffers = class _IterableDiffers {
   static extend(factories) {
     return {
       provide: _IterableDiffers,
-      useFactory: (parent) => {
+      useFactory: () => {
+        const parent = inject2(_IterableDiffers, { optional: true, skipSelf: true });
         return _IterableDiffers.create(factories, parent || defaultIterableDiffersFactory());
-      },
-      // Dependency technically isn't optional, but we can provide a better error message this way.
-      deps: [[_IterableDiffers, new SkipSelf(), new Optional()]]
+      }
     };
   }
   find(iterable) {
@@ -28419,11 +28959,10 @@ var KeyValueDiffers = class _KeyValueDiffers {
   static extend(factories) {
     return {
       provide: _KeyValueDiffers,
-      useFactory: (parent) => {
+      useFactory: () => {
+        const parent = inject2(_KeyValueDiffers, { optional: true, skipSelf: true });
         return _KeyValueDiffers.create(factories, parent || defaultKeyValueDiffersFactory());
-      },
-      // Dependency technically isn't optional, but we can provide a better error message this way.
-      deps: [[_KeyValueDiffers, new SkipSelf(), new Optional()]]
+      }
     };
   }
   find(kv) {
@@ -29372,18 +29911,6 @@ function ɵɵngDeclarePipe(decl) {
   });
   return compiler.compilePipeDeclaration(angularCoreEnv, `ng:///${decl.type.name}/ɵpipe.js`, decl);
 }
-function getTransferState(injector) {
-  const doc = getDocument();
-  const appId = injector.get(APP_ID);
-  const transferState = retrieveTransferredState(doc, appId);
-  const filteredEntries = {};
-  for (const [key, value] of Object.entries(transferState)) {
-    if (!isInternalHydrationTransferStateKey(key)) {
-      filteredEntries[key] = value;
-    }
-  }
-  return filteredEntries;
-}
 var NOT_SET = Symbol("NOT_SET");
 var EMPTY_CLEANUP_SET = /* @__PURE__ */ new Set();
 var AFTER_RENDER_PHASE_EFFECT_NODE = (() => __spreadProps(__spreadValues({}, SIGNAL_NODE), {
@@ -29454,8 +29981,8 @@ var AfterRenderEffectSequence = class extends AfterRenderSequence {
    * These are initialized to `undefined` but set in the constructor.
    */
   nodes = [void 0, void 0, void 0, void 0];
-  constructor(impl, effectHooks, view, scheduler, destroyRef, snapshot = null) {
-    super(impl, [void 0, void 0, void 0, void 0], view, false, destroyRef, snapshot);
+  constructor(impl, effectHooks, view, scheduler, injector, snapshot = null) {
+    super(impl, [void 0, void 0, void 0, void 0], view, false, injector.get(DestroyRef), snapshot);
     this.scheduler = scheduler;
     for (const phase of AFTER_RENDER_PHASES) {
       const effectHook = effectHooks[phase];
@@ -29475,6 +30002,9 @@ var AfterRenderEffectSequence = class extends AfterRenderSequence {
       node.registerCleanupFn = (fn) => (node.cleanup ??= /* @__PURE__ */ new Set()).add(fn);
       this.nodes[phase] = node;
       this.hooks[phase] = (value) => node.phaseFn(value);
+      if (ngDevMode) {
+        setupDebugInfo(node, injector);
+      }
     }
   }
   afterRun() {
@@ -29514,9 +30044,31 @@ function afterRenderEffect(callbackOrSpec, options) {
     spec = { mixedReadWrite: callbackOrSpec };
   }
   const viewContext = injector.get(ViewContext, null, { optional: true });
-  const sequence = new AfterRenderEffectSequence(manager.impl, [spec.earlyRead, spec.write, spec.mixedReadWrite, spec.read], viewContext?.view, scheduler, injector.get(DestroyRef), tracing?.snapshot(null));
+  const sequence = new AfterRenderEffectSequence(manager.impl, [spec.earlyRead, spec.write, spec.mixedReadWrite, spec.read], viewContext?.view, scheduler, injector, tracing?.snapshot(null));
   manager.impl.register(sequence);
   return sequence;
+}
+function setupDebugInfo(node, injector) {
+  node.debugName = `afterRenderEffect - ${phaseDebugName(node.phase)} phase`;
+  const prevInjectorProfilerContext = setInjectorProfilerContext({ injector, token: null });
+  try {
+    emitEffectCreatedEvent({ [SIGNAL]: node, destroy() {
+    } });
+  } finally {
+    setInjectorProfilerContext(prevInjectorProfilerContext);
+  }
+}
+function phaseDebugName(phase) {
+  switch (phase) {
+    case 0:
+      return "EarlyRead";
+    case 1:
+      return "Write";
+    case 2:
+      return "MixedReadWrite";
+    case 3:
+      return "Read";
+  }
 }
 function createComponent(component, options) {
   ngDevMode && assertComponentDef(component);
@@ -29573,9 +30125,6 @@ var REQUEST_CONTEXT = new InjectionToken(typeof ngDevMode === "undefined" || ngD
 });
 
 export {
-  __spreadValues,
-  __spreadProps,
-  __objRest,
   setCurrentInjector,
   SIGNAL,
   Subscription,
@@ -29661,6 +30210,7 @@ export {
   ɵɵnamespaceSVG,
   ɵɵnamespaceMathML,
   ɵɵnamespaceHTML,
+  getAnimationElementRemovalRegistry,
   createInjector,
   Injector,
   DOCUMENT,
@@ -29716,6 +30266,7 @@ export {
   IS_HYDRATION_DOM_REUSE_ENABLED,
   IS_INCREMENTAL_HYDRATION_ENABLED,
   JSACTION_BLOCK_ELEMENT_MAP,
+  IS_ENABLED_BLOCKING_INITIAL_NAVIGATION,
   JSACTION_EVENT_CONTRACT,
   DEHYDRATED_BLOCK_REGISTRY,
   SSR_CONTENT_INTEGRITY_MARKER,
@@ -29773,6 +30324,7 @@ export {
   inputBinding,
   outputBinding,
   twoWayBinding,
+  inferTagNameFromDefinition,
   ComponentFactory2 as ComponentFactory,
   ComponentRef2 as ComponentRef,
   ViewContainerRef,
@@ -29821,6 +30373,7 @@ export {
   Console,
   getDeferBlocks$1,
   enableProfiling,
+  getTransferState,
   publishExternalGlobalUtil,
   TESTABILITY,
   TESTABILITY_GETTER,
@@ -29860,7 +30413,15 @@ export {
   ɵɵdeferOnViewport,
   ɵɵdeferPrefetchOnViewport,
   ɵɵdeferHydrateOnViewport,
+  ɵɵariaProperty,
   ɵɵattribute,
+  ANIMATIONS_DISABLED,
+  MAX_ANIMATION_TIMEOUT,
+  ElementRegistry,
+  ɵɵanimateEnter,
+  ɵɵanimateEnterListener,
+  ɵɵanimateLeave,
+  ɵɵanimateLeaveListener,
   ɵɵcomponentInstance,
   ɵɵconditionalCreate,
   ɵɵconditionalBranchCreate,
@@ -29948,6 +30509,7 @@ export {
   ɵɵinterpolateV,
   ɵɵProvidersFeature,
   ɵɵExternalStylesFeature,
+  ɵɵAnimationsFeature,
   ɵɵsetComponentScope,
   ɵɵsetNgModuleScope,
   ɵɵpureFunction0,
@@ -30088,7 +30650,6 @@ export {
   ɵɵngDeclareInjector,
   ɵɵngDeclareNgModule,
   ɵɵngDeclarePipe,
-  getTransferState,
   afterRenderEffect,
   createComponent,
   reflectComponentType,
@@ -30101,7 +30662,7 @@ export {
 
 @angular/core/fesm2022/not_found.mjs:
 @angular/core/fesm2022/signal.mjs:
-@angular/core/fesm2022/untracked.mjs:
+@angular/core/fesm2022/effect.mjs:
 @angular/core/fesm2022/weak_ref.mjs:
 @angular/core/fesm2022/primitives/signals.mjs:
 @angular/core/fesm2022/primitives/di.mjs:
@@ -30110,7 +30671,7 @@ export {
 @angular/core/fesm2022/resource.mjs:
 @angular/core/fesm2022/primitives/event-dispatch.mjs:
   (**
-   * @license Angular v20.1.7
+   * @license Angular v20.2.4
    * (c) 2010-2025 Google LLC. https://angular.io/
    * License: MIT
    *)
@@ -30118,7 +30679,7 @@ export {
 @angular/core/fesm2022/debug_node.mjs:
 @angular/core/fesm2022/core.mjs:
   (**
-   * @license Angular v20.1.7
+   * @license Angular v20.2.4
    * (c) 2010-2025 Google LLC. https://angular.io/
    * License: MIT
    *)
@@ -30139,4 +30700,4 @@ export {
    * found in the LICENSE file at https://angular.dev/license
    *)
 */
-//# sourceMappingURL=chunk-GIKWJLYW.js.map
+//# sourceMappingURL=chunk-36DRJ7VZ.js.map
