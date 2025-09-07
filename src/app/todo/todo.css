@@ -1,0 +1,9 @@
+.todo-container {
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 1rem;
+}
+
+button {
+  margin-left: 0.5rem;
+}
