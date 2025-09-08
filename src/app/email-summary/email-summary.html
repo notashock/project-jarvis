@@ -1,0 +1,10 @@
+<div class="summary-container">
+  <h2>Email Digest</h2>
+
+  <div *ngIf="loading">Loading summary...</div>
+  <div *ngIf="error">{{ error }}</div>
+
+  <p *ngIf="summary">{{ summary }}</p>
+
+  <button (click)="fetchSummary()" class="refresh-btn">🔄 Refresh</button>
+</div>
