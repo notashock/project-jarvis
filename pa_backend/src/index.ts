@@ -1,5 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
+import cors from "cors";
 import connectDB from "./config/db.js";
 import gmailRoutes from "./routes/gmailRoutes.js";
 import authRoutes from "./routes/auth.js" // 👈 import routes
@@ -8,6 +9,12 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+
+app.use(cors({
+  origin: "http://localhost:4200", // frontend URL
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+}));
 
 // Middleware
 app.use(express.json());
