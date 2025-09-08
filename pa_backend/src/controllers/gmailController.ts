@@ -2,6 +2,7 @@
 import type { Request, Response } from "express";
 import { fetchLatestEmail } from "../services/gmailService.js";
 import Email from "../models/Email.js";
+import token from "../models/token.js";
 
 // ✅ Fetch and save latest email from Gmail API
 export const getLatestEmail = async (req: Request, res: Response) => {
@@ -41,5 +42,15 @@ export const getAllEmails = async (req: Request, res: Response) => {
   } catch (err) {
     console.error("Error fetching emails from DB:", err);
     res.status(500).json({ error: "Failed to fetch emails", details: err });
+  }
+};
+
+export const getConnectedMails = async (req: Request, res: Response) => {
+  try {
+    const email = await token.find({}, "email googleId");
+    res.json(email);
+  }catch(err){
+    console.error("Error fetching connected mails from DB:", err);
+    res.status(500).json({ error: "Failed to fetch connected mails", details: err });
   }
 };

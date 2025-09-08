@@ -1,9 +1,10 @@
 import { Router } from "express";
-import { getAllEmails, getLatestEmail } from "../controllers/gmailController.js";
+import { getAllEmails, getConnectedMails, getLatestEmail } from "../controllers/gmailController.js";
 
 const router = Router();
 
 router.get("/latest/:googleId", getLatestEmail);
 router.get("/all", getAllEmails);
+router.get("/accounts", getConnectedMails);
 
 export default router;
