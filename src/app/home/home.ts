@@ -1,31 +1,33 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { TodoComponent } from '../todo/todo';
+import { EmailService, Email } from '../services/email.service';
 
 @Component({
   selector: 'app-home',
   standalone: true,
   imports: [CommonModule, DatePipe, TodoComponent],
   templateUrl: './home.html',
-  styleUrls: ['./home.css']
+  styleUrl: './home.css'
 })
 export class HomeComponent implements OnInit {
-  emails: { from: string; subject: string; date: Date; body: string }[] = [];
+  emails: Email[] = [];
+  loading = true;
+  error: string | null = null;
 
-  ngOnInit() {
-    this.emails = [
-      {
-        from: 'john@example.com',
-        subject: 'Meeting Reminder',
-        date: new Date(),
-        body: 'Don’t forget our meeting at 3pm today.'
+  constructor(private emailService: EmailService) {}
+
+  ngOnInit(): void {
+    this.emailService.getLatestEmails().subscribe({
+      next: (data) => {
+        this.emails = data;
+        this.loading = false;
       },
-      {
-        from: 'jane@example.com',
-        subject: 'Invoice Attached',
-        date: new Date(),
-        body: 'Please find the invoice attached for your records.'
+      error: (err) => {
+        console.error('Error fetching emails:', err);
+        this.error = 'Failed to load emails';
+        this.loading = false;
       }
-    ];
+    });
   }
 }
