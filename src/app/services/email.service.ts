@@ -20,4 +20,7 @@ export class EmailService {
   getLatestEmails(): Observable<Email[]> {
     return this.http.get<Email[]>(`${this.apiUrl}/all`);
   }
+  getConnectedAccounts(): Observable<{ googleId: string; email: string }[]> {
+    return this.http.get<{ googleId: string; email: string }[]>(`${this.apiUrl}/accounts`);
+  }
 }
