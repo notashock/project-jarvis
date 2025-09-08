@@ -2,31 +2,37 @@
   <!-- Left: Todo List -->
   <div class="todo-section">
     <app-todo></app-todo>
+
+    <!-- New Email Summary component -->
+    <app-email-summary></app-email-summary>
   </div>
 
-  <!-- Right: Emails -->
+  <!-- Right: Emails + Accounts -->
   <div class="emails-section">
-    <h2>Connected Gmail</h2>
+    <h2>Connected Gmail Accounts</h2>
+    <div *ngIf="accounts?.length; else noAccounts">
+      <ul>
+        <li *ngFor="let acc of accounts">
+          {{ acc.email }} (ID: {{ acc.googleId }})
+        </li>
+      </ul>
+    </div>
+    <ng-template #noAccounts>
+      <p>No Gmail accounts connected yet. Connect one to get started.</p>
+    </ng-template>
 
-    <!-- Loading state -->
-    <div *ngIf="loading">Loading emails...</div>
-
-    <!-- Error state -->
-    <div *ngIf="error" class="error">{{ error }}</div>
-
-    <!-- Emails list -->
-    <div *ngIf="!loading && !error && emails?.length; else noEmails">
-      <div *ngFor="let email of emails ?? []" class="email-card">
-        <h3>{{ email?.subject }}</h3>
-        <p><strong>From:</strong> {{ email?.from }}</p>
-        <p><strong>Date:</strong> {{ email?.date | date:'short' }}</p>
-        <p>{{ email?.body }}</p>
+    <h2>Latest Emails</h2>
+    <div *ngIf="emails?.length; else noEmails">
+      <div *ngFor="let email of emails" class="email-card">
+        <h3>{{ email.subject }}</h3>
+        <p><strong>From:</strong> {{ email.from }}</p>
+        <p><strong>Date:</strong> {{ email.date | date:'short' }}</p>
+        <p>{{ email.body }}</p>
       </div>
     </div>
 
-    <!-- No emails fallback -->
     <ng-template #noEmails>
-      <p>No emails found. Connect Gmail to get started.</p>
+      <p>No emails found.</p>
     </ng-template>
   </div>
 </div>
