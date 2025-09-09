@@ -9,7 +9,7 @@ import { HttpClient } from '@angular/common/http';
   templateUrl: './email-summary.html',
   styleUrl: './email-summary.css'
 })
-export class EmailSummaryComponent implements OnInit {
+export class EmailSummaryComponent {
   summary: string | null = null;
   loading = false;
   error: string | null = null;
@@ -17,10 +17,6 @@ export class EmailSummaryComponent implements OnInit {
   private apiUrl = 'http://localhost:5000/api/gemini/summarize';
 
   constructor(private http: HttpClient) {}
-
-  ngOnInit(): void {
-    this.fetchSummary();
-  }
 
   fetchSummary(): void {
     this.loading = true;

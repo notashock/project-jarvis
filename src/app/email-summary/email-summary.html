@@ -1,10 +1,26 @@
 <div class="summary-container">
-  <h2>Email Digest</h2>
+  <div class="summary-header">
+    <h2>Email Digest</h2>
+    <button (click)="fetchSummary()" class="refresh-btn" [disabled]="loading">
+      <span *ngIf="!loading">🔄 Refresh</span>
+      <span *ngIf="loading" class="spinner"></span>
+    </button>
+  </div>
 
-  <div *ngIf="loading">Loading summary...</div>
-  <div *ngIf="error">{{ error }}</div>
+  <!-- Content states -->
+  <div class="summary-content">
+    <div *ngIf="loading" class="loading-text">Generating summary...</div>
 
-  <p *ngIf="summary">{{ summary }}</p>
+    <div *ngIf="error" class="error-text">
+      {{ error }}
+    </div>
 
-  <button (click)="fetchSummary()" class="refresh-btn">🔄 Refresh</button>
+    <p *ngIf="summary && !loading && !error" class="summary-text">
+      {{ summary }}
+    </p>
+
+    <div *ngIf="!summary && !loading && !error" class="placeholder-text">
+      Click <strong>Refresh</strong> to generate a summary of your latest emails.
+    </div>
+  </div>
 </div>
