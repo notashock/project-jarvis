@@ -1,9 +1,149 @@
-.todo-container {
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  padding: 1rem;
+/* Accent color shared across app */
+:root {
+  --accent-green: #4caf50;
+  --accent-green-dark: #388e3c;
 }
 
-button {
-  margin-left: 0.5rem;
+/* Container */
+.todo-container {
+  max-width: 480px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  border-radius: 16px;
+  background: #fafafa;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  font-family: system-ui, sans-serif;
+}
+
+h2 {
+  margin-bottom: 1.2rem;
+  font-size: 1.4rem;
+  font-weight: 600;
+  text-align: center;
+  color: #333;
+}
+
+/* Add Task Section */
+.add-task {
+  display: flex;
+  gap: 0.6rem;
+  margin-bottom: 1.5rem;
+}
+
+.task-input,
+.date-input {
+  flex: 1;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+
+.task-input:focus,
+.date-input:focus {
+  border-color: var(--accent-green);
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.15);
+}
+
+/* Date picker styling */
+.date-input {
+  color: #444;
+  cursor: pointer;
+}
+
+.date-input::-webkit-calendar-picker-indicator {
+  background: var(--accent-green);
+  mask: url("data:image/svg+xml;utf8,<svg fill='white' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10h5v5H7z'/><path d='M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 18H5V8h14v13z'/></svg>")
+    no-repeat center;
+  -webkit-mask: url("data:image/svg+xml;utf8,<svg fill='white' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10h5v5H7z'/><path d='M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 18H5V8h14v13z'/></svg>")
+    no-repeat center;
+  width: 1.2rem;
+  height: 1.2rem;
+  border-radius: 50%;
+  padding: 4px;
+  cursor: pointer;
+}
+
+/* Add button */
+.add-btn {
+  background: var(--accent-green);
+  color: white;
+  border: none;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease;
+  white-space: nowrap;
+}
+
+.add-btn:hover {
+  background: var(--accent-green-dark);
+  transform: translateY(-1px);
+}
+
+.add-btn:active {
+  transform: translateY(0);
+}
+
+/* Task List */
+.task-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.task-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.7rem 0.5rem;
+  border-bottom: 1px solid #eee;
+  transition: background 0.2s;
+}
+
+.task-item:hover {
+  background: #f9f9f9;
+  border-radius: 6px;
+}
+
+/* Task Info */
+.task-main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.task-desc {
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.task-desc.done {
+  text-decoration: line-through;
+  color: #999;
+}
+
+.task-date {
+  font-size: 0.8rem;
+  color: var(--accent-green-dark);
+}
+
+/* Remove button */
+.remove-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.1rem;
+  color: #bbb;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: color 0.2s, background 0.2s;
+}
+
+.remove-btn:hover {
+  color: #e53935;
+  background: #ffebee;
 }
