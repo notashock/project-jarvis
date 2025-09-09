@@ -24,8 +24,7 @@ app.use(express.json());
 connectDB();
 
 // Routes
-app.use("/api/gemini", geminiRoutes
-)
+app.use("/api/gemini", geminiRoutes);
 app.use("/api/gmail", gmailRoutes) // 👈 mount email routes
 app.use("/api/auth", authRoutes); // 👈 mount auth routes
 // Start server
