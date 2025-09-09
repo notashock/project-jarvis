@@ -4,6 +4,7 @@ import cors from "cors";
 import connectDB from "./config/db.js";
 import gmailRoutes from "./routes/gmailRoutes.js";
 import geminiRoutes from "./routes/geminiRoutes.js";
+import taskRoutes from "./routes/taskRoutes.js"
 import authRoutes from "./routes/auth.js" // 👈 import routes
 
 dotenv.config();
@@ -24,6 +25,7 @@ app.use(express.json());
 connectDB();
 
 // Routes
+app.use("/api/tasks", taskRoutes);
 app.use("/api/gemini", geminiRoutes);
 app.use("/api/gmail", gmailRoutes) // 👈 mount email routes
 app.use("/api/auth", authRoutes); // 👈 mount auth routes
