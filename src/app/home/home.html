@@ -1,14 +1,30 @@
 <div class="home-container">
-  <!-- Left: Todo List -->
-  <div class="todo-section">
+  <!-- Left column: Todo + Email Summary -->
+  <div class="summary-container">
     <app-todo></app-todo>
-
-    <!-- New Email Summary component -->
     <app-email-summary></app-email-summary>
   </div>
 
-  <!-- Right: Emails + Accounts -->
+  <!-- Right column: Gmail Accounts + Emails -->
   <div class="emails-section">
+    <h2>
+      Latest Emails
+      <button class="refresh-btn" (click)="refreshEmails()" title="Fetch latest emails">⟳</button>
+    </h2>
+
+    <div *ngIf="emails?.length; else noEmails" class="emails-list">
+      <div *ngFor="let email of emails" class="email-card">
+        <h3>{{ email.subject }}</h3>
+        <p><strong>From:</strong> {{ email.from }}</p>
+        <p><strong>Date:</strong> {{ email.date | date:'short' }}</p>
+        <markdown [data]="email.body"></markdown>
+      </div>
+    </div>
+
+    <ng-template #noEmails>
+      <p>No emails found.</p>
+    </ng-template>
+
     <h2>Connected Gmail Accounts</h2>
     <div *ngIf="accounts?.length; else noAccounts">
       <ul>
@@ -19,20 +35,6 @@
     </div>
     <ng-template #noAccounts>
       <p>No Gmail accounts connected yet. Connect one to get started.</p>
-    </ng-template>
-
-    <h2>Latest Emails</h2>
-    <div *ngIf="emails?.length; else noEmails">
-      <div *ngFor="let email of emails" class="email-card">
-        <h3>{{ email.subject }}</h3>
-        <p><strong>From:</strong> {{ email.from }}</p>
-        <p><strong>Date:</strong> {{ email.date | date:'short' }}</p>
-        <p>{{ email.body }}</p>
-      </div>
-    </div>
-
-    <ng-template #noEmails>
-      <p>No emails found.</p>
     </ng-template>
   </div>
 </div>
