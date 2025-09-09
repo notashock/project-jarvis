@@ -80,7 +80,5 @@ export async function fetchLatestEmail(googleId: string) {
     date: new Date(),
     isRead: false,
   });
-
-  await emailDoc.save();
   return emailDoc;
 }
