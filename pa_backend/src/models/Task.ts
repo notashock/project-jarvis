@@ -1,17 +1,24 @@
 import mongoose, { Schema, Document } from "mongoose";
 
 export interface ITask extends Document {
-  emailId: mongoose.Types.ObjectId;
   description: string;
   dueDate?: Date;
   status: "pending" | "done";
+  source: "manual" | "email" | "other";
 }
 
-const taskSchema = new Schema<ITask>({
-  emailId: { type: Schema.Types.ObjectId, ref: "Email", required: true },
-  description: { type: String, required: true },
-  dueDate: { type: Date },
-  status: { type: String, default: "pending" },
-});
+const taskSchema = new Schema<ITask>(
+  {
+    description: { type: String, required: true },
+    dueDate: { type: Date },
+    status: { type: String, enum: ["pending", "done"], default: "pending" },
+    source: {
+      type: String,
+      enum: ["manual", "email", "other"],
+      default: "manual",
+    },
+  },
+  { timestamps: true }
+);
 
 export default mongoose.model<ITask>("Task", taskSchema);
