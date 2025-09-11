@@ -1,5 +1,8 @@
 <div class="todo-container">
-  <h2>Tasks</h2>
+  <div class="todo-header">
+    <h2>Tasks</h2>
+    <button class="add-btn" (click)="addTask()">＋ Add</button>
+  </div>
 
   <!-- Add Task Form -->
   <div class="add-task">
@@ -14,8 +17,6 @@
       [(ngModel)]="newDueDate"
       class="date-input"
     />
-
-    <button class="add-btn" (click)="addTask()">Add Task</button>
   </div>
 
   <!-- Task List -->
@@ -30,11 +31,16 @@
           {{ task.description }}
         </span>
         <small *ngIf="task.dueDate" class="task-date">
-          Due: {{ task.dueDate | date: 'mediumDate' }}
+          📅 {{ task.dueDate | date: 'mediumDate' }}
         </small>
       </div>
 
       <button class="remove-btn" (click)="removeTask(task)">✕</button>
     </li>
   </ul>
+
+  <!-- Empty State -->
+  <div *ngIf="tasks.length === 0" class="empty-tasks">
+    🎉 All tasks completed! Add a new one above.
+  </div>
 </div>

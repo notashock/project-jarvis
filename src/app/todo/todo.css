@@ -1,92 +1,60 @@
-/* Accent color shared across app */
-:root {
-  --accent-green: #4caf50;
-  --accent-green-dark: #388e3c;
-}
-
-/* Container */
 .todo-container {
-  max-width: 480px;
-  margin: 2rem auto;
-  padding: 1.5rem;
-  border-radius: 16px;
-  background: #fafafa;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  font-family: system-ui, sans-serif;
+  background: #ffffff;
+  padding: 1.25rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  font-family: 'Lexend', sans-serif;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
-h2 {
-  margin-bottom: 1.2rem;
+/* Header: Title + Add button */
+.todo-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.todo-header h2 {
+  margin: 0;
   font-size: 1.4rem;
   font-weight: 600;
-  text-align: center;
   color: #333;
 }
 
-/* Add Task Section */
+.add-btn {
+  background: #4caf50;
+  border: none;
+  color: #fff;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.2s ease;
+}
+
+.add-btn:hover {
+  background: #388e3c;
+}
+
+/* Add Task Form */
 .add-task {
   display: flex;
-  gap: 0.6rem;
-  margin-bottom: 1.5rem;
+  gap: 0.5rem;
 }
 
 .task-input,
 .date-input {
   flex: 1;
-  padding: 0.6rem 0.75rem;
+  padding: 0.5rem 0.75rem;
   border: 1px solid #ddd;
-  border-radius: 8px;
-  font-size: 0.95rem;
-  outline: none;
-  transition: border 0.2s, box-shadow 0.2s;
+  border-radius: 6px;
+  font-size: 0.9rem;
 }
 
-.task-input:focus,
-.date-input:focus {
-  border-color: var(--accent-green);
-  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.15);
-}
-
-/* Date picker styling */
 .date-input {
-  color: #444;
-  cursor: pointer;
-}
-
-.date-input::-webkit-calendar-picker-indicator {
-  background: var(--accent-green);
-  mask: url("data:image/svg+xml;utf8,<svg fill='white' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10h5v5H7z'/><path d='M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 18H5V8h14v13z'/></svg>")
-    no-repeat center;
-  -webkit-mask: url("data:image/svg+xml;utf8,<svg fill='white' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10h5v5H7z'/><path d='M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 18H5V8h14v13z'/></svg>")
-    no-repeat center;
-  width: 1.2rem;
-  height: 1.2rem;
-  border-radius: 50%;
-  padding: 4px;
-  cursor: pointer;
-}
-
-/* Add button */
-.add-btn {
-  background: var(--accent-green);
-  color: white;
-  border: none;
-  padding: 0.6rem 1rem;
-  border-radius: 8px;
-  font-size: 0.95rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s ease, transform 0.1s ease;
-  white-space: nowrap;
-}
-
-.add-btn:hover {
-  background: var(--accent-green-dark);
-  transform: translateY(-1px);
-}
-
-.add-btn:active {
-  transform: translateY(0);
+  max-width: 150px;
 }
 
 /* Task List */
@@ -98,52 +66,61 @@ h2 {
 
 .task-item {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 0.7rem 0.5rem;
-  border-bottom: 1px solid #eee;
-  transition: background 0.2s;
+  justify-content: space-between;
+  background: #f9fafb;
+  border-left: 4px solid #4caf50;
+  border-radius: 8px;
+  padding: 0.6rem 0.8rem;
+  margin-bottom: 0.6rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .task-item:hover {
-  background: #f9f9f9;
-  border-radius: 6px;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.06);
 }
 
-/* Task Info */
 .task-main {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
 }
 
 .task-desc {
-  font-size: 1rem;
+  font-size: 0.95rem;
   cursor: pointer;
 }
 
 .task-desc.done {
   text-decoration: line-through;
-  color: #999;
+  color: #777;
 }
 
 .task-date {
   font-size: 0.8rem;
-  color: var(--accent-green-dark);
+  color: #555;
+  margin-top: 0.2rem;
 }
 
 /* Remove button */
 .remove-btn {
   background: transparent;
   border: none;
-  font-size: 1.1rem;
-  color: #bbb;
+  color: #d32f2f;
+  font-size: 1rem;
   cursor: pointer;
-  border-radius: 6px;
-  transition: color 0.2s, background 0.2s;
+  transition: color 0.2s ease;
 }
 
 .remove-btn:hover {
-  color: #e53935;
-  background: #ffebee;
+  color: #b71c1c;
+}
+
+/* Empty State */
+.empty-tasks {
+  text-align: center;
+  color: #777;
+  font-style: italic;
+  font-size: 0.95rem;
+  margin-top: 0.5rem;
 }
