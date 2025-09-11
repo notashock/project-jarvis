@@ -73,11 +73,6 @@ export class HomeComponent implements OnInit {
     this.fetchAndStoreEmails(this.selectedGoogleId).subscribe({
       next: () => {
         this.loadEmailsFromDb();
-
-        // 👇 trigger summary generation when refresh is done
-        if (this.emailSummaryComp) {
-          this.emailSummaryComp.fetchSummary();
-        }
       },
       error: (err) => {
         console.error('Error refreshing emails:', err);
