@@ -9,7 +9,13 @@
   <div class="emails-section">
     <h2>
       Latest Emails
-      <button class="refresh-btn" (click)="refreshEmails()" title="Fetch latest emails">⟳</button>
+      <button
+        class="refresh-btn"
+        (click)="refreshEmails()"
+        [class.loading]="loading"
+        title="Fetch latest emails">
+        ⟳
+      </button>
     </h2>
 
     <div *ngIf="emails?.length; else noEmails" class="emails-list">
