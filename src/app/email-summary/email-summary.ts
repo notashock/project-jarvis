@@ -1,3 +1,4 @@
+import { MarkdownModule } from 'ngx-markdown';
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
@@ -5,7 +6,7 @@ import { HttpClient } from '@angular/common/http';
 @Component({
   selector: 'app-email-summary',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, MarkdownModule],
   templateUrl: './email-summary.html',
   styleUrl: './email-summary.css'
 })
