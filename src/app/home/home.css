@@ -48,58 +48,95 @@
   padding-bottom: 0.5rem;
 }
 
-.refresh-btn {
-  margin-left: 10px;
-  padding: 6px 10px;
+.email-item {
+  padding: 12px 0;
+}
+
+.email-divider {
   border: none;
-  border-radius: 50%;
-  background-color: #f5f5f5;
+  border-bottom: 1px solid #e0e0e0;
+  margin: 12px 0;
+}
+
+.placeholder-text {
+  color: #888;
+  font-style: italic;
+}
+
+.refresh-btn {
+  background: #4caf50;
+  border: none;
+  color: #fff;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
   cursor: pointer;
-  font-size: 18px;
-  transition: transform 0.2s ease;
+  font-size: 0.9rem;
+  transition: background 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
 }
 
-.refresh-btn:hover {
-  background-color: #e0e0e0;
+.refresh-btn:hover:not(:disabled) {
+  background: #388e3c;
 }
 
-.refresh-btn.loading {
-  animation: spin 1s linear infinite;
+.refresh-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Spinner animation */
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #fff;
+  border-top: 2px solid transparent;
+  border-radius: 50%;
+  display: inline-block;
+  animation: spin 0.8s linear infinite;
 }
 
 @keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
+  to {
     transform: rotate(360deg);
   }
 }
 
-
 /* Scrollable Emails List */
 .emails-list {
-  max-height: 300px;
+  max-height: 450px;
   overflow-y: auto;
+  position: relative;
+
+  /* Firefox fallback */
   scrollbar-width: thin;
-  scrollbar-color: #4caf50 #f1f1f1;
+  scrollbar-color: #4caf50 transparent;
 }
 
-/* Scrollbar styling for Chrome/Edge/Safari */
+/* WebKit Scrollbar */
 .emails-list::-webkit-scrollbar {
   width: 8px;
-}
-.emails-list::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: transparent;  /* hide track */
   border-radius: 8px;
 }
+
+.emails-list::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 8px;
+}
+
 .emails-list::-webkit-scrollbar-thumb {
   background-color: #4caf50;
-  border-radius: 8px;
-  border: 2px solid #f1f1f1;
+  border-radius: 12px;
+  border: 2px solid transparent;
+  opacity: 0;               /* hidden by default */
+  transition: opacity 0.3s;
 }
+
+/* Show thumb only when hovering over the thumb */
 .emails-list::-webkit-scrollbar-thumb:hover {
-  background-color: #388e3c;
+  opacity: 1;
 }
 
 /* Email Card inside emails */

@@ -7,40 +7,55 @@
 
   <!-- Right column: Gmail Accounts + Emails -->
   <div class="emails-section">
-    <h2>
+    <h2 class="section-title">
       Latest Emails
       <button
         class="refresh-btn"
         (click)="refreshEmails()"
-        [class.loading]="loading"
+        [disabled]="loading"
         title="Fetch latest emails">
-        ⟳
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          fill="currentColor"
+          class="bi bi-arrow-clockwise"
+          viewBox="0 0 16 16">
+          <path fill-rule="evenodd"
+            d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.418A6 6 0 1 1 8 2v1z"/>
+          <path
+            d="M8 0a.5.5 0 0 1 .5.5v4.707l2.146-2.147a.5.5 0 0 1 .708.708L8.5 6.707V2.5A.5.5 0 0 1 8 2z"/>
+        </svg>
       </button>
     </h2>
 
     <div *ngIf="emails?.length; else noEmails" class="emails-list">
-      <div *ngFor="let email of emails" class="email-card">
+      <div *ngFor="let email of emails; let last = last" class="email-item">
         <h3>{{ email.subject }}</h3>
         <p><strong>From:</strong> {{ email.from }}</p>
         <p><strong>Date:</strong> {{ email.date | date:'short' }}</p>
         <markdown [data]="email.body"></markdown>
+        <!-- Divider except after last email -->
+        <hr *ngIf="!last" class="email-divider"/>
       </div>
     </div>
 
     <ng-template #noEmails>
-      <p>No emails found.</p>
+      <p class="placeholder-text">No emails found.</p>
     </ng-template>
 
-    <h2>Connected Gmail Accounts</h2>
+    <h2 class="section-title">Connected Gmail Accounts</h2>
     <div *ngIf="accounts?.length; else noAccounts">
-      <ul>
+      <ul class="accounts-list">
         <li *ngFor="let acc of accounts">
-          {{ acc.email }} (ID: {{ acc.googleId }})
+          <span class="account-email">{{ acc.email }}</span> (ID: {{ acc.googleId }})
         </li>
       </ul>
     </div>
     <ng-template #noAccounts>
-      <p>No Gmail accounts connected yet. Connect one to get started.</p>
+      <p class="placeholder-text">
+        No Gmail accounts connected yet. Connect one to get started.
+      </p>
     </ng-template>
   </div>
 </div>
