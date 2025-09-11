@@ -5,7 +5,7 @@ import connectDB from "./config/db.js";
 import gmailRoutes from "./routes/gmailRoutes.js";
 import geminiRoutes from "./routes/geminiRoutes.js";
 import taskRoutes from "./routes/taskRoutes.js"
-import authRoutes from "./routes/auth.js" // 👈 import routes
+import authRoutes from "./routes/authRoutes.js" // 👈 import routes
 
 dotenv.config();
 
