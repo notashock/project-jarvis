@@ -8,7 +8,12 @@ export const summarizeEmailsWithTasks = async (limit = 10) => {
 
   const emailContext = emails
     .map(
-      (e) => `Subject: ${e.subject}\nFrom: ${e.from}\nDate: ${e.date}\n${e.body}`
+      (e) => `
+GmailMessageId: ${e.gmailMessageId}
+Subject: ${e.subject}
+From: ${e.from}
+Date: ${e.date}
+Body: ${e.body}`
     )
     .join("\n\n");
 
@@ -23,24 +28,27 @@ Produce a summary with TWO sections:
        "description": "string",
        "dueDate": "YYYY-MM-DD" | null,
        "status": "pending",
-       "source": "email"
+       "source": "email",
+       "gmailMessageId": "string" // must match the email above
      }
    ]
 
 Rules:
-- Only include actionable items in "taskSummary".
+- Always include the correct "gmailMessageId" for each task.
+- Only include actionable items.
 - Do not invent tasks.
 - "status" must always be "pending".
 - "source" must always be "email".
-- If no due date is mentioned, set "dueDate" = null.
+- If no due date is mentioned, use null.
 
-Return a single JSON object with the two keys: { "normalSummary": string, "taskSummary": Task[] }
+Return a single JSON object with the keys:
+{ "normalSummary": string, "taskSummary": Task[] }
 
 Emails:
 ${emailContext}
 `;
 
-  let response: string = "";
+  let response = "";
   try {
     response = await geminiGenerate(prompt);
   } catch (err) {
@@ -53,20 +61,11 @@ ${emailContext}
     return { summary: "", tasks: [], emails };
   }
 
-  let parsed: { normalSummary: string; taskSummary: any[] } = {
-    normalSummary: "",
-    taskSummary: [],
-  };
-
+  let parsed = { normalSummary: "", taskSummary: [] as any[] };
   try {
-    const cleaned = response
-      .replace(/```json/gi, "")
-      .replace(/```/g, "")
-      .trim();
-
+    const cleaned = response.replace(/```json/gi, "").replace(/```/g, "").trim();
     if (cleaned.startsWith("{") && cleaned.endsWith("}")) {
-      const raw = JSON.parse(cleaned);
-      parsed = JSON.parse(JSON.stringify(raw));
+      parsed = JSON.parse(cleaned);
     } else {
       console.error("Gemini response not valid JSON:", cleaned);
     }
@@ -78,37 +77,33 @@ ${emailContext}
 
   if (parsed && Array.isArray(parsed.taskSummary)) {
     for (const task of parsed.taskSummary) {
-      if (!task || !task.description) continue;
+      if (!task?.description || !task?.gmailMessageId) continue;
 
       const dueDate = task.dueDate ? new Date(task.dueDate) : null;
 
       try {
-        // check for duplicate (same description + dueDate)
+        const emailDoc = await Email.findOne({ gmailMessageId: task.gmailMessageId });
+
+        // duplicate check: same description + dueDate + gmailMessageId
         const existing = await Task.findOne({
           description: task.description,
-          dueDate: dueDate,
+          dueDate,
+          gmailMessageId: task.gmailMessageId,
         });
 
         if (!existing) {
-          // Attempt to find a matching email for this task
-          // Here we use the most recent email that contains the task description
-          const emailDoc = await Email.findOne({
-            subject: { $regex: task.description, $options: "i" },
-          }).sort({ date: -1 });
-          console.log("Matched email for task:", emailDoc);
           const newTask = new Task({
             description: task.description,
-            dueDate: dueDate,
+            dueDate,
             status: "pending",
             source: "email",
-            gmailId: emailDoc?._id, // assign MongoDB id if available
+            gmailMessageId: task.gmailMessageId,
+            gmailRef: emailDoc?._id,
           });
 
-          // Save task
           const savedTask = await newTask.save();
           savedTasks.push(savedTask);
 
-          // Mark the corresponding email as important
           if (emailDoc) {
             await Email.findByIdAndUpdate(emailDoc._id, { important: true });
           }
