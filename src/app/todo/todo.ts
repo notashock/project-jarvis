@@ -38,6 +38,9 @@ export class TodoComponent implements OnInit {
     });
   }
 
+  reloadTasks(){
+    this.getTasks();
+  }
   // Add new task
   addTask() {
     if (this.newTask.trim()) {

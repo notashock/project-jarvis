@@ -1,7 +1,10 @@
 <div class="todo-container">
   <div class="todo-header">
     <h2>Tasks</h2>
-    <button class="add-btn" (click)="addTask()">＋ Add</button>
+    <div class="header-actions">
+      <button class="reload-btn" (click)="reloadTasks()">⟳ Reload</button>
+      <button class="add-btn" (click)="addTask()">＋ Add</button>
+    </div>
   </div>
 
   <!-- Add Task Form -->
@@ -11,12 +14,7 @@
       placeholder="What needs to be done?"
       class="task-input"
     />
-
-    <input
-      type="date"
-      [(ngModel)]="newDueDate"
-      class="date-input"
-    />
+    <input type="date" [(ngModel)]="newDueDate" class="date-input" />
   </div>
 
   <!-- Task List -->
@@ -34,7 +32,6 @@
           📅 {{ task.dueDate | date: 'mediumDate' }}
         </small>
       </div>
-
       <button class="remove-btn" (click)="removeTask(task)">✕</button>
     </li>
   </ul>
