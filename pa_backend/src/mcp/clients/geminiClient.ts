@@ -5,12 +5,14 @@ dotenv.config();
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
+// Reuse the same model instance
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
 /**
- * Generates a text summary from the given prompt using Gemini.
+ * Generate text from Gemini given a prompt.
+ * Handles all errors in one place.
  */
-export async function summarizeText(prompt: string): Promise<string> {
+export async function geminiGenerate(prompt: string): Promise<string> {
   try {
     const result = await model.generateContent(prompt);
     return result.response.text();

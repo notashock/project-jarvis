@@ -1,31 +1,113 @@
-import { summarizeText as geminiSummarize } from "../../mcp/clients/geminiClient.js";
+import { geminiGenerate } from "../../mcp/clients/geminiClient.js";
 import Email from "../../models/Email.js";
+import Task from "../../models/Task.js";
 
-/**
- * Summarize latest N emails in DB
- * @param limit - number of latest emails to summarize (default 10)
- * @returns { summary: string, emails: Email[] }
- */
-export const summarizeEmails = async () => {
-  // 1. Load latest N emails
-  const emails = await Email.find().sort({ date: -1 });
+export const summarizeEmailsWithTasks = async (limit = 10) => {
+  const emails = await Email.find().sort({ date: -1 }).limit(limit);
+  if (!emails || emails.length === 0) throw new Error("No emails found in DB");
 
-  if (!emails || emails.length === 0) {
-    throw new Error("No emails found in DB");
-  }
-
-  // 2. Build prompt text for Gemini
-  const emailText = emails
+  const emailContext = emails
     .map(
       (e) => `Subject: ${e.subject}\nFrom: ${e.from}\nDate: ${e.date}\n${e.body}`
     )
     .join("\n\n");
 
-  const prompt = `Summarize the following emails into a short digest:\n\n${emailText}`;
+  const prompt = `
+You are an assistant that processes emails.
+Produce a summary with TWO sections:
 
-  // 3. Call Gemini client
-  const summary = await geminiSummarize(prompt);
+1. "normalSummary": A human-readable bullet-point summary of the emails.
+2. "taskSummary": A JSON array of tasks strictly following this schema:
+   [
+     {
+       "description": "string",
+       "dueDate": "YYYY-MM-DD" | null,
+       "status": "pending",
+       "source": "email"
+     }
+   ]
 
-  // 4. Return both summary + raw emails
-  return { summary, emails };
+Rules:
+- Only include actionable items in "taskSummary".
+- Do not invent tasks.
+- "status" must always be "pending".
+- "source" must always be "email".
+- If no due date is mentioned, set "dueDate" = null.
+
+Return a single JSON object with the two keys: { "normalSummary": string, "taskSummary": Task[] }
+
+Emails:
+${emailContext}
+`;
+
+  let response: string = "";
+  try {
+    response = await geminiGenerate(prompt);
+  } catch (err) {
+    console.error("Gemini API failed:", err);
+    return { summary: "", tasks: [], emails };
+  }
+
+  if (!response || typeof response !== "string") {
+    console.error("Gemini returned empty or invalid response");
+    return { summary: "", tasks: [], emails };
+  }
+
+  let parsed: { normalSummary: string; taskSummary: any[] } = {
+    normalSummary: "",
+    taskSummary: [],
+  };
+
+  try {
+    const cleaned = response
+      .replace(/```json/gi, "")
+      .replace(/```/g, "")
+      .trim();
+
+    if (cleaned.startsWith("{") && cleaned.endsWith("}")) {
+      const raw = JSON.parse(cleaned);
+
+      // 🔑 force into plain JS object (removes null prototypes)
+      parsed = JSON.parse(JSON.stringify(raw));
+    } else {
+      console.error("Gemini response not valid JSON:", cleaned);
+    }
+  } catch (err) {
+    console.error("Failed to parse Gemini response:", err);
+  }
+
+  const savedTasks: any[] = [];
+  if (parsed && Array.isArray(parsed.taskSummary)) {
+    for (const task of parsed.taskSummary) {
+      if (!task || !task.description) continue;
+
+      const dueDate = task.dueDate ? new Date(task.dueDate) : null;
+
+      try {
+        // check for duplicate (same description + dueDate)
+        const existing = await Task.findOne({
+          description: task.description,
+          dueDate: dueDate,
+        });
+
+        if (!existing) {
+          const newTask = new Task({
+            description: task.description,
+            dueDate: dueDate,
+            status: "pending",
+            source: "email",
+          });
+          savedTasks.push(await newTask.save());
+        }
+      } catch (dbErr) {
+        console.error("Error saving task:", dbErr);
+      }
+    }
+  }
+
+  return {
+    summary: parsed.normalSummary || "",
+    tasks: savedTasks,
+    emails,
+  };
 };
