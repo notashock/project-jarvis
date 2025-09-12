@@ -1,6 +1,6 @@
 import express from "express";
 import {
-  getLatestEmail,
+  getTodaysEmails,
   getAllEmails,
   getConnectedMails,
 } from "../mcp/tools/gmailTool.js";
@@ -9,7 +9,7 @@ const router = express.Router();
 
 router.get("/latest/:googleId", async (req, res, next) => {
   try {
-    const email = await getLatestEmail(req.params.googleId);
+    const email = await getTodaysEmails(req.params.googleId);
     if (!email) return res.status(404).json({ message: "No new emails found" });
     res.json(email);
   } catch (err: any) {

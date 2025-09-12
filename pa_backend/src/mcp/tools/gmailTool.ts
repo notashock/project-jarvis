@@ -1,48 +1,39 @@
-import { fetchLatestEmail } from "../../services/gmailService.js";
-import Email from "../../models/Email.js";
+import { fetchTodaysEmails } from "../../services/gmailService.js";
+import type { IEmail } from "../../models/Email.js";
+import EmailModel from "../../models/Email.js";
 import Token from "../../models/token.js";
 
 /**
- * Fetch and save the latest email for a given googleId
+ * Fetch and return today's emails for a given googleId
  */
-export const getLatestEmail = async (googleId: string) => {
+export const getTodaysEmails = async (
+  googleId: string
+): Promise<IEmail[] | { message: string }> => {
   if (!googleId) {
     throw new Error("Missing googleId parameter");
   }
 
-  const email = await fetchLatestEmail(googleId);
-  if (!email) {
-    return null; // caller decides how to respond (404 or message)
-  }
+  const emails: IEmail[] = await fetchTodaysEmails(googleId);
 
-  // Check if email with the same subject already exists
-  const exists = await Email.findOne({ subject: email.subject });
-  if (exists) {
+  if (!emails || emails.length === 0) {
     return { message: "No new emails to save" };
   }
 
-  const savedEmail = await Email.create({
-    from: email.from,
-    to: email.to ?? "me",
-    subject: email.subject,
-    body: email.body,
-    date: email.date ?? new Date(),
-    isRead: false,
-  });
-
-  return savedEmail;
+  return emails; // ✅ no duplicate check or re-saving
 };
 
 /**
  * Fetch latest 20 emails from DB
  */
-export const getAllEmails = async () => {
-  return Email.find().sort({ date: -1 }).limit(20);
+export const getAllEmails = async (): Promise<IEmail[]> => {
+  return EmailModel.find().sort({ date: -1 }).limit(20);
 };
 
 /**
  * Fetch all connected mail accounts from DB
  */
-export const getConnectedMails = async () => {
+export const getConnectedMails = async (): Promise<
+  { email: string; googleId: string }[]
+> => {
   return Token.find({}, "email googleId");
 };

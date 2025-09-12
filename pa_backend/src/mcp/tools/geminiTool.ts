@@ -66,8 +66,6 @@ ${emailContext}
 
     if (cleaned.startsWith("{") && cleaned.endsWith("}")) {
       const raw = JSON.parse(cleaned);
-
-      // 🔑 force into plain JS object (removes null prototypes)
       parsed = JSON.parse(JSON.stringify(raw));
     } else {
       console.error("Gemini response not valid JSON:", cleaned);
@@ -77,6 +75,7 @@ ${emailContext}
   }
 
   const savedTasks: any[] = [];
+
   if (parsed && Array.isArray(parsed.taskSummary)) {
     for (const task of parsed.taskSummary) {
       if (!task || !task.description) continue;
@@ -91,13 +90,28 @@ ${emailContext}
         });
 
         if (!existing) {
+          // Attempt to find a matching email for this task
+          // Here we use the most recent email that contains the task description
+          const emailDoc = await Email.findOne({
+            subject: { $regex: task.description, $options: "i" },
+          }).sort({ date: -1 });
+          console.log("Matched email for task:", emailDoc);
           const newTask = new Task({
             description: task.description,
             dueDate: dueDate,
             status: "pending",
             source: "email",
+            gmailId: emailDoc?._id, // assign MongoDB id if available
           });
-          savedTasks.push(await newTask.save());
+
+          // Save task
+          const savedTask = await newTask.save();
+          savedTasks.push(savedTask);
+
+          // Mark the corresponding email as important
+          if (emailDoc) {
+            await Email.findByIdAndUpdate(emailDoc._id, { important: true });
+          }
         }
       } catch (dbErr) {
         console.error("Error saving task:", dbErr);
