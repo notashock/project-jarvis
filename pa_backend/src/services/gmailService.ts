@@ -1,36 +1,50 @@
-import { google, gmail_v1 } from "googleapis";
+// src/services/gmailService.ts
+import { google } from "googleapis";
 import Token from "../models/token.js";
 import type { IEmail } from "../models/Email.js";
 import Email from "../models/Email.js";
 
-export async function fetchTodaysEmails(googleId: string): Promise<IEmail[]> {
-  // 1. Get tokens from DB
+/**
+ * Get an authenticated Gmail client for a user
+ */
+const getGmailClient = async (googleId: string) => {
   const tokenDoc = await Token.findOne({ googleId });
-  if (!tokenDoc?.refreshToken) throw new Error("No refresh token found");
+  if (!tokenDoc?.refreshToken) {
+    throw new Error("No refresh token found for this user");
+  }
 
-  // 2. Set up OAuth2 client
   const oauth2Client = new google.auth.OAuth2(
-    process.env.GOOGLE_CLIENT_ID!,
-    process.env.GOOGLE_CLIENT_SECRET!,
-    process.env.GOOGLE_REDIRECT_URI!
+    process.env.GOOGLE_CLIENT_ID,
+    process.env.GOOGLE_CLIENT_SECRET,
+    process.env.GOOGLE_REDIRECT_URI
   );
-  oauth2Client.setCredentials({ refresh_token: tokenDoc.refreshToken });
 
-  // 3. Create Gmail API instance
-  const gmail = google.gmail({ version: "v1", auth: oauth2Client });
+  oauth2Client.setCredentials({
+    access_token: tokenDoc.accessToken,
+    refresh_token: tokenDoc.refreshToken,
+    expiry_date: tokenDoc.tokenExpiry,
+  });
 
-  // 4. List emails from last 24h
-  const listRes: gmail_v1.Schema$ListMessagesResponse =
-    (
-      await gmail.users.messages.list({
-        userId: "me",
-        maxResults: 20, // adjust as needed
-        labelIds: ["INBOX"],
-        q: "newer_than:1d",
-      })
-    ).data;
+  return { gmail: google.gmail({ version: "v1", auth: oauth2Client }), tokenDoc };
+};
 
-  const messages = listRes.messages || [];
+/**
+ * Fetch inbox emails (latest N messages, deduplicate by gmailMessageId)
+ */
+export const fetchTodaysEmails = async (
+  googleId: string,
+  maxResults: number = 10
+): Promise<IEmail[]> => {
+  const { gmail, tokenDoc } = await getGmailClient(googleId);
+
+  // List messages
+  const listRes = await gmail.users.messages.list({
+    userId: "me",
+    maxResults,
+    labelIds: ["INBOX"],
+  });
+
+  const messages = listRes.data.messages || [];
   if (messages.length === 0) return [];
 
   const savedEmails: IEmail[] = [];
@@ -39,11 +53,11 @@ export async function fetchTodaysEmails(googleId: string): Promise<IEmail[]> {
     const messageId = msg.id;
     if (!messageId) continue;
 
-    // ✅ Check if already in DB by messageId
+    // Skip if already stored
     const exists = await Email.findOne({ gmailMessageId: messageId });
     if (exists) continue;
 
-    // 5. Get full message
+    // Fetch full message
     const msgRes = await gmail.users.messages.get({
       userId: "me",
       id: messageId,
@@ -56,7 +70,8 @@ export async function fetchTodaysEmails(googleId: string): Promise<IEmail[]> {
     const headers = payload.headers || [];
     const subject =
       headers.find((h) => h.name === "Subject")?.value || "No Subject";
-    const from = headers.find((h) => h.name === "From")?.value || "Unknown";
+    const from =
+      headers.find((h) => h.name === "From")?.value || "Unknown";
 
     let body = "";
     if (payload.parts && payload.parts.length > 0) {
@@ -67,9 +82,9 @@ export async function fetchTodaysEmails(googleId: string): Promise<IEmail[]> {
       body = Buffer.from(payload.body.data, "base64").toString("utf8");
     }
 
-    // 6. Save to MongoDB
+    // Save email
     const emailDoc = new Email({
-      gmailMessageId: messageId, // ✅ store unique ID
+      gmailMessageId: messageId,
       from,
       to: tokenDoc.email,
       subject,
@@ -81,7 +96,7 @@ export async function fetchTodaysEmails(googleId: string): Promise<IEmail[]> {
     await emailDoc.save();
     savedEmails.push(emailDoc);
 
-    // 7. Mark email as read in Gmail
+    // Mark as read
     await gmail.users.messages.modify({
       userId: "me",
       id: messageId,
@@ -90,4 +105,4 @@ export async function fetchTodaysEmails(googleId: string): Promise<IEmail[]> {
   }
 
   return savedEmails;
-}
+};
