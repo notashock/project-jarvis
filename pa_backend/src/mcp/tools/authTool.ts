@@ -17,10 +17,18 @@ const oauth2Client = new google.auth.OAuth2(
  */
 export const generateGoogleAuthUrl = () => {
   const scopes = [
+    // Gmail scopes
     "https://www.googleapis.com/auth/gmail.readonly",
     "https://www.googleapis.com/auth/gmail.send",
     "https://www.googleapis.com/auth/gmail.modify",
+
+    // User info
     "https://www.googleapis.com/auth/userinfo.email",
+
+    // Google Classroom (read-only for courses, announcements, materials)
+    "https://www.googleapis.com/auth/classroom.courses.readonly",
+    "https://www.googleapis.com/auth/classroom.announcements.readonly",
+    "https://www.googleapis.com/auth/classroom.courseworkmaterials.readonly",
   ];
 
   const url = oauth2Client.generateAuthUrl({
