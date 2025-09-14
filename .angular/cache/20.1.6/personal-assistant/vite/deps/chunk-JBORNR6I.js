@@ -58,7 +58,7 @@ import {
   ɵɵinject,
   ɵɵinjectAttribute,
   ɵɵstyleProp
-} from "./chunk-MV7NLFX6.js";
+} from "./chunk-YLOMPQSO.js";
 import {
   __spreadProps,
   __spreadValues
@@ -3713,7 +3713,7 @@ function isPlatformBrowser(platformId) {
 function isPlatformServer(platformId) {
   return platformId === PLATFORM_SERVER_ID;
 }
-var VERSION = new Version("20.2.4");
+var VERSION = new Version("20.3.0");
 var ViewportScroller = class _ViewportScroller {
   // De-sugared tree-shakable injection
   // See #23917
@@ -5181,9 +5181,9 @@ export {
 @angular/common/fesm2022/platform_navigation.mjs:
 @angular/common/fesm2022/common.mjs:
   (**
-   * @license Angular v20.2.4
+   * @license Angular v20.3.0
    * (c) 2010-2025 Google LLC. https://angular.io/
    * License: MIT
    *)
 */
-//# sourceMappingURL=chunk-KFMT5UXL.js.map
+//# sourceMappingURL=chunk-JBORNR6I.js.map

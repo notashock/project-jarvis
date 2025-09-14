@@ -1,5 +1,4 @@
 import {
-  ALLOW_MULTIPLE_PLATFORMS,
   ANIMATIONS_DISABLED,
   ANIMATION_MODULE_TYPE,
   APP_BOOTSTRAP_LISTENER,
@@ -497,7 +496,7 @@ import {
   ɵɵvalidateIframeAttribute,
   ɵɵviewQuery,
   ɵɵviewQuerySignal
-} from "./chunk-MV7NLFX6.js";
+} from "./chunk-YLOMPQSO.js";
 import "./chunk-GOMI4DH3.js";
 export {
   ANIMATION_MODULE_TYPE,
@@ -655,7 +654,6 @@ export {
   untracked,
   viewChild,
   viewChildren,
-  ALLOW_MULTIPLE_PLATFORMS as ɵALLOW_MULTIPLE_PLATFORMS,
   ANIMATIONS_DISABLED as ɵANIMATIONS_DISABLED,
   AcxChangeDetectionStrategy as ɵAcxChangeDetectionStrategy,
   AcxViewEncapsulation as ɵAcxViewEncapsulation,

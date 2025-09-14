@@ -1,9 +1,9 @@
 import {
   BrowserModule,
   DomRendererFactory2
-} from "./chunk-B63CBHGG.js";
-import "./chunk-KFMT5UXL.js";
-import "./chunk-OUSM42MY.js";
+} from "./chunk-52HHFXQ3.js";
+import "./chunk-JBORNR6I.js";
+import "./chunk-CZW6QYGI.js";
 import {
   ANIMATION_MODULE_TYPE,
   DOCUMENT,
@@ -19,7 +19,7 @@ import {
   ɵɵdefineInjector,
   ɵɵdefineNgModule,
   ɵɵinject
-} from "./chunk-MV7NLFX6.js";
+} from "./chunk-YLOMPQSO.js";
 import {
   __objRest,
   __spreadValues
@@ -4622,7 +4622,7 @@ export {
 @angular/animations/fesm2022/browser.mjs:
 @angular/platform-browser/fesm2022/animations.mjs:
   (**
-   * @license Angular v20.2.4
+   * @license Angular v20.3.0
    * (c) 2010-2025 Google LLC. https://angular.io/
    * License: MIT
    *)

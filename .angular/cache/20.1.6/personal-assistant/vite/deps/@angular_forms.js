@@ -1,7 +1,7 @@
 import {
   getDOM
-} from "./chunk-KFMT5UXL.js";
-import "./chunk-OUSM42MY.js";
+} from "./chunk-JBORNR6I.js";
+import "./chunk-CZW6QYGI.js";
 import {
   ApplicationRef,
   ChangeDetectorRef,
@@ -49,7 +49,7 @@ import {
   ɵɵdirectiveInject,
   ɵɵgetInheritedFactory,
   ɵɵlistener
-} from "./chunk-MV7NLFX6.js";
+} from "./chunk-YLOMPQSO.js";
 import {
   __spreadProps,
   __spreadValues
@@ -6800,7 +6800,7 @@ var UntypedFormBuilder = class _UntypedFormBuilder extends FormBuilder {
     }]
   }], null, null);
 })();
-var VERSION = new Version("20.2.4");
+var VERSION = new Version("20.3.0");
 var FormsModule = class _FormsModule {
   /**
    * @description
@@ -6953,7 +6953,7 @@ export {
 
 @angular/forms/fesm2022/forms.mjs:
   (**
-   * @license Angular v20.2.4
+   * @license Angular v20.3.0
    * (c) 2010-2025 Google LLC. https://angular.io/
    * License: MIT
    *)

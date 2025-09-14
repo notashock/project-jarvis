@@ -4,11 +4,11 @@ import {
   PLATFORM_BROWSER_ID,
   getDOM,
   setRootDomAdapter
-} from "./chunk-KFMT5UXL.js";
+} from "./chunk-JBORNR6I.js";
 import {
   XhrFactory,
   parseCookieValue
-} from "./chunk-OUSM42MY.js";
+} from "./chunk-CZW6QYGI.js";
 import {
   ANIMATIONS_DISABLED,
   APP_ID,
@@ -48,7 +48,7 @@ import {
   ɵɵdefineInjector,
   ɵɵdefineNgModule,
   ɵɵinject
-} from "./chunk-MV7NLFX6.js";
+} from "./chunk-YLOMPQSO.js";
 import {
   __spreadValues
 } from "./chunk-GOMI4DH3.js";
@@ -1125,9 +1125,10 @@ var KeyEventsPlugin = class _KeyEventsPlugin extends EventManagerPlugin {
     }]
   }], null);
 })();
-function bootstrapApplication(rootComponent, options) {
+function bootstrapApplication(rootComponent, options, context) {
   const config = __spreadValues({
-    rootComponent
+    rootComponent,
+    platformRef: context?.platformRef
   }, createProvidersConfig(options));
   if ((typeof ngJitMode === "undefined" || ngJitMode) && typeof fetch === "function") {
     return resolveComponentResources(fetch).catch((error) => {
@@ -1267,9 +1268,9 @@ export {
 @angular/platform-browser/fesm2022/dom_renderer.mjs:
 @angular/platform-browser/fesm2022/browser.mjs:
   (**
-   * @license Angular v20.2.4
+   * @license Angular v20.3.0
    * (c) 2010-2025 Google LLC. https://angular.io/
    * License: MIT
    *)
 */
-//# sourceMappingURL=chunk-B63CBHGG.js.map
+//# sourceMappingURL=chunk-52HHFXQ3.js.map

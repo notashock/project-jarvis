@@ -14445,7 +14445,7 @@ var ComponentFactory2 = class extends ComponentFactory$1 {
   }
 };
 function createRootTView(rootSelectorOrNode, componentDef, componentBindings, directives) {
-  const tAttributes = rootSelectorOrNode ? ["ng-version", "20.2.4"] : (
+  const tAttributes = rootSelectorOrNode ? ["ng-version", "20.3.0"] : (
     // Extract attributes and classes from the first selector only to match VE behavior.
     extractAttrsAndClassesFromSelector(componentDef.selectors[0])
   );
@@ -27676,7 +27676,7 @@ var Version = class {
     this.patch = parts.slice(2).join(".");
   }
 };
-var VERSION = new Version("20.2.4");
+var VERSION = new Version("20.3.0");
 function compileNgModuleFactory(injector, options, moduleType) {
   ngDevMode && assertNgModuleType(moduleType);
   const moduleFactory = new NgModuleFactory2(moduleType);
@@ -27898,8 +27898,8 @@ function bootstrap(config2) {
       return initStatus.donePromise.then(() => {
         const localeId = envInjector.get(LOCALE_ID, DEFAULT_LOCALE_ID);
         setLocaleId(localeId || DEFAULT_LOCALE_ID);
-        const enableRootComponentBoostrap = envInjector.get(ENABLE_ROOT_COMPONENT_BOOTSTRAP, true);
-        if (!enableRootComponentBoostrap) {
+        const enableRootComponentbootstrap = envInjector.get(ENABLE_ROOT_COMPONENT_BOOTSTRAP, true);
+        if (!enableRootComponentbootstrap) {
           if (isApplicationBootstrapConfig(config2)) {
             return envInjector.get(ApplicationRef);
           }
@@ -28063,14 +28063,13 @@ var PlatformRef = class _PlatformRef {
   }], () => [{ type: Injector }], null);
 })();
 var _platformInjector = null;
-var ALLOW_MULTIPLE_PLATFORMS = new InjectionToken(ngDevMode ? "AllowMultipleToken" : "");
 function createPlatform(injector) {
-  if (_platformInjector && !_platformInjector.get(ALLOW_MULTIPLE_PLATFORMS, false)) {
+  if (getPlatform()) {
     throw new RuntimeError(400, ngDevMode && "There can be only one platform. Destroy the previous one to create a new one.");
   }
   publishDefaultGlobalUtils();
   publishSignalConfiguration();
-  _platformInjector = injector;
+  _platformInjector = true ? injector : null;
   const platform = injector.get(PlatformRef);
   runPlatformInitializers(injector);
   return platform;
@@ -28080,19 +28079,15 @@ function createPlatformFactory(parentPlatformFactory, name, providers = []) {
   const marker = new InjectionToken(desc);
   return (extraProviders = []) => {
     let platform = getPlatform();
-    if (!platform || platform.injector.get(ALLOW_MULTIPLE_PLATFORMS, false)) {
+    if (!platform) {
       const platformProviders = [
         ...providers,
         ...extraProviders,
         { provide: marker, useValue: true }
       ];
-      if (parentPlatformFactory) {
-        parentPlatformFactory(platformProviders);
-      } else {
-        createPlatform(createPlatformInjector(platformProviders, desc));
-      }
+      platform = parentPlatformFactory?.(platformProviders) ?? createPlatform(createPlatformInjector(platformProviders, desc));
     }
-    return assertPlatform(marker);
+    return false ? platform : assertPlatform(marker);
   };
 }
 function createPlatformInjector(providers = [], name) {
@@ -28116,6 +28111,9 @@ function assertPlatform(requiredToken) {
   return platform;
 }
 function getPlatform() {
+  if (false) {
+    return null;
+  }
   return _platformInjector?.get(PlatformRef) ?? null;
 }
 function destroyPlatform() {
@@ -28126,7 +28124,9 @@ function createOrReusePlatformInjector(providers = []) {
     return _platformInjector;
   publishDefaultGlobalUtils();
   const injector = createPlatformInjector(providers);
-  _platformInjector = injector;
+  if (true) {
+    _platformInjector = injector;
+  }
   publishSignalConfiguration();
   runPlatformInitializers(injector);
   return injector;
@@ -29186,16 +29186,19 @@ var ApplicationModule = class _ApplicationModule {
   }], () => [{ type: ApplicationRef }], null);
 })();
 function internalCreateApplication(config2) {
+  const { rootComponent, appProviders, platformProviders, platformRef } = config2;
   profiler(
     8
     /* ProfilerEvent.BootstrapApplicationStart */
   );
+  if (false) {
+    throw new RuntimeError(401, ngDevMode && "Missing Platform: This may be due to using `bootstrapApplication` on the server without passing a `BootstrapContext`. Please make sure that `bootstrapApplication` is called with a `context` argument.");
+  }
   try {
-    const { rootComponent, appProviders, platformProviders } = config2;
+    const platformInjector = platformRef?.injector ?? createOrReusePlatformInjector(platformProviders);
     if ((typeof ngDevMode === "undefined" || ngDevMode) && rootComponent !== void 0) {
       assertStandaloneComponentType(rootComponent);
     }
-    const platformInjector = createOrReusePlatformInjector(platformProviders);
     const allAppProviders = [
       internalProvideZoneChangeDetection({}),
       { provide: ChangeDetectionScheduler, useExisting: ChangeDetectionSchedulerImpl },
@@ -30798,7 +30801,6 @@ export {
   compileNgModuleFactory,
   ENABLE_ROOT_COMPONENT_BOOTSTRAP,
   PlatformRef,
-  ALLOW_MULTIPLE_PLATFORMS,
   createPlatform,
   createPlatformFactory,
   assertPlatform,
@@ -30868,7 +30870,7 @@ export {
 @angular/core/fesm2022/resource.mjs:
 @angular/core/fesm2022/primitives/event-dispatch.mjs:
   (**
-   * @license Angular v20.2.4
+   * @license Angular v20.3.0
    * (c) 2010-2025 Google LLC. https://angular.io/
    * License: MIT
    *)
@@ -30876,7 +30878,7 @@ export {
 @angular/core/fesm2022/debug_node.mjs:
 @angular/core/fesm2022/core.mjs:
   (**
-   * @license Angular v20.2.4
+   * @license Angular v20.3.0
    * (c) 2010-2025 Google LLC. https://angular.io/
    * License: MIT
    *)
@@ -30897,4 +30899,4 @@ export {
    * found in the LICENSE file at https://angular.dev/license
    *)
 */
-//# sourceMappingURL=chunk-MV7NLFX6.js.map
+//# sourceMappingURL=chunk-YLOMPQSO.js.map
