@@ -5,7 +5,7 @@ import EmailModel from "../../models/Email.js";
  * Delete emails older than 24h from DB (excluding important ones)
  */
 const deleteOldEmails = async () => {
-  const cutoff = new Date(Date.now() - 24 * 60 * 60 * 1000);
+  const cutoff = new Date(Date.now() - 12 * 60 * 60 * 1000);
   return EmailModel.deleteMany({
     date: { $lt: cutoff },
     important: { $ne: true },
