@@ -1,34 +1,26 @@
-<h2 class="section-title">
-  Latest Emails
-  <button
-    class="refresh-btn"
-    (click)="refreshEmails()"
-    [disabled]="loading"
-    title="Fetch latest emails">
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-         fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
-      <path fill-rule="evenodd"
-        d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1
-           .908-.418A6 6 0 1 1 8 2v1z"/>
-      <path
-        d="M8 0a.5.5 0 0 1 .5.5v4.707l2.146-2.147a.5.5
-           0 0 1 .708.708L8.5 6.707V2.5A.5.5 0 0 1 8 2z"/>
-    </svg>
-  </button>
-</h2>
-
 <div class="emails-container">
-  <div *ngIf="emails?.length; else noEmails" class="emails-list">
-    <div *ngFor="let email of emails; let last = last" class="email-item">
-      <h3>{{ email.subject }}</h3>
-      <p><strong>From:</strong> {{ email.from }}</p>
-      <p><strong>Date:</strong> {{ email.date | date:'short' }}</p>
-      <markdown [data]="email.body"></markdown>
-      <hr *ngIf="!last" class="email-divider"/>
-    </div>
+  <!-- Loading State -->
+  <div *ngIf="loading" class="emails-loading">
+    Loading emails...
   </div>
 
-  <ng-template #noEmails>
-    <p class="placeholder-text">No emails found.</p>
-  </ng-template>
+  <!-- Error State -->
+  <div *ngIf="error" class="emails-error">
+    {{ error }}
+  </div>
+
+  <!-- Email List -->
+  <ul class="emails-list" *ngIf="!loading && !error && emails.length > 0">
+    <li *ngFor="let email of emails" class="email-item">
+      <div class="email-from">{{ email.from }}</div>
+      <div class="email-subject">{{ email.subject }}</div>
+      <div class="email-snippet">{{ email.snippet }}</div>
+      <div class="email-date">{{ email.date | date:'short' }}</div>
+    </li>
+  </ul>
+
+  <!-- Empty State -->
+  <div *ngIf="!loading && emails.length === 0" class="emails-empty">
+    No emails found.
+  </div>
 </div>
