@@ -1,0 +1,40 @@
+<div class="home-dashboard">
+  <!-- Left column -->
+  <div class="left-column">
+    <div class="dashboard-card combined-card">
+      <div class="combined-top">
+        <div class="sub-card">
+          <h2>Todo</h2>
+          <app-todo></app-todo>
+        </div>
+
+        <div class="sub-card">
+          <h2>Email Summary</h2>
+          <app-email-summary></app-email-summary>
+        </div>
+      </div>
+    </div>
+
+    <div class="dashboard-card">
+      <h2>Connected Accounts</h2>
+      <app-accounts [accounts]="accounts"></app-accounts>
+    </div>
+  </div>
+
+  <!-- Right column -->
+  <div class="right-column">
+    <div class="dashboard-card">
+      <h2>Emails</h2>
+      <app-emails
+        [emails]="emails"
+        [loading]="loading"
+        (refresh)="refreshEmails()">
+      </app-emails>
+    </div>
+
+    <div class="dashboard-card">
+      <h2>Upcoming Classroom Details</h2>
+      <!-- <app-classroom></app-classroom> -->
+    </div>
+  </div>
+</div>

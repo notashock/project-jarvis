@@ -1,20 +1,20 @@
 <div class="todo-container">
-  <div class="todo-header">
-    <h2>Tasks</h2>
-    <div class="header-actions">
-      <button class="reload-btn" (click)="reloadTasks()">⟳ Reload</button>
-      <button class="add-btn" (click)="addTask()">＋ Add</button>
-    </div>
-  </div>
 
-  <!-- Add Task Form -->
+  <!-- Add Task + Date Picker inline -->
   <div class="add-task">
-    <input
-      [(ngModel)]="newTask"
-      placeholder="What needs to be done?"
-      class="task-input"
-    />
-    <input type="date" [(ngModel)]="newDueDate" class="date-input" />
+    <div class="task-input-wrapper">
+      <input
+        [(ngModel)]="newTask"
+        placeholder="What needs to be done?"
+        class="task-input"
+      />
+      <div class="date-picker-wrapper">
+        <input type="date" [(ngModel)]="newDueDate" class="date-input" />
+        <span class="calendar-icon">📅</span>
+      </div>
+    </div>
+    <button class="add-btn" (click)="addTask()">＋ Add</button>
+    <button class="reload-btn" (click)="reloadTasks()">⟳ Reload</button>
   </div>
 
   <!-- Task List -->
@@ -40,4 +40,5 @@
   <div *ngIf="tasks.length === 0" class="empty-tasks">
     🎉 All tasks completed! Add a new one above.
   </div>
+
 </div>

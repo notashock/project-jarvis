@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
-import { HomeComponent } from './home/home';
+import { HomeDashboardComponent } from './pages/home-dashboard/home-dashboard';
 
 export const routes: Routes = [
-  { path: '', component: HomeComponent }, // default route
+  { path: '', redirectTo: 'dashboard', pathMatch: 'full' }, // default route
+  { path: 'dashboard', component: HomeDashboardComponent },
 ];

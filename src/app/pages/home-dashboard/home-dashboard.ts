@@ -1,32 +1,40 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { CommonModule, DatePipe } from '@angular/common';
-import { TodoComponent } from '../todo/todo';
-import { MarkdownModule } from 'ngx-markdown';
-import { EmailSummaryComponent } from '../email-summary/email-summary';
-import { EmailService, Email } from '../services/email.service';
+import { CommonModule } from '@angular/common';
+import { DatePipe } from '@angular/common';
+import { TodoComponent } from '../../components/todo/todo';
+import { EmailSummaryComponent } from '../../components/email-summary/email-summary';
+import { EmailsComponent } from '../../components/emails/emails';
+import { AccountsComponent } from '../../components/accounts/accounts';
+import { EmailService, Email } from '../../services/email.service';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, DatePipe, TodoComponent, EmailSummaryComponent, MarkdownModule],
-  templateUrl: './home.html',
-  styleUrl: './home.css'
+  imports: [
+    CommonModule,
+    DatePipe,
+    TodoComponent,
+    EmailSummaryComponent,
+    EmailsComponent,
+    AccountsComponent
+  ],
+  templateUrl: './home-dashboard.html',
+  styleUrls: ['./home-dashboard.css']
 })
-export class HomeComponent implements OnInit {
+export class HomeDashboardComponent implements OnInit {
   emails: Email[] = [];
   accounts: { googleId: string; email: string }[] = [];
   loading = true;
   error: string | null = null;
   selectedGoogleId: string | null = null;
 
-  // 👇 reference to child summary component
   @ViewChild(EmailSummaryComponent) emailSummaryComp!: EmailSummaryComponent;
 
   constructor(private emailService: EmailService) {}
 
   ngOnInit(): void {
     this.fetchAccounts();
-    this.loadEmailsFromDb(); // ✅ only once
+    this.loadEmailsFromDb();
   }
 
   fetchAccounts() {
@@ -65,7 +73,6 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  /** Refresh button handler: fetch Gmail + reload DB + generate summary */
   refreshEmails() {
     if (!this.selectedGoogleId) return;
 
