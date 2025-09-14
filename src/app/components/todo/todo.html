@@ -1,43 +1,38 @@
 <div class="todo-container">
 
-  <!-- Add Task + Date Picker inline -->
-  <div class="add-task">
-    <div class="task-input-wrapper">
-      <input
-        [(ngModel)]="newTask"
-        placeholder="What needs to be done?"
-        class="task-input"
-      />
-      <div class="date-picker-wrapper">
-        <input type="date" [(ngModel)]="newDueDate" class="date-input" />
-        <span class="calendar-icon">📅</span>
-      </div>
-    </div>
-    <button class="add-btn" (click)="addTask()">＋ Add</button>
-    <button class="reload-btn" (click)="reloadTasks()">⟳ Reload</button>
+  <!-- Add Task Section -->
+  <div class="todo-add">
+    <input
+      type="text"
+      [(ngModel)]="newTask"
+      placeholder="Add a new task..."
+      class="todo-input"
+    />
+    <input
+      type="date"
+      [(ngModel)]="newDueDate"
+      class="todo-date"
+    />
   </div>
 
   <!-- Task List -->
-  <ul class="task-list">
-    <li *ngFor="let task of tasks" class="task-item">
-      <div class="task-main">
+  <ul class="todo-list" *ngIf="tasks.length > 0">
+    <li *ngFor="let task of tasks" class="todo-item">
+      <div class="task-info">
         <span
-          class="task-desc"
           [class.done]="task.status === 'done'"
           (click)="toggleStatus(task)"
         >
           {{ task.description }}
         </span>
-        <small *ngIf="task.dueDate" class="task-date">
-          📅 {{ task.dueDate | date: 'mediumDate' }}
-        </small>
+        <small *ngIf="task.dueDate">{{ task.dueDate | date:'shortDate' }}</small>
       </div>
-      <button class="remove-btn" (click)="removeTask(task)">✕</button>
+      <button class="btn-delete" (click)="removeTask(task)">×</button>
     </li>
   </ul>
 
   <!-- Empty State -->
-  <div *ngIf="tasks.length === 0" class="empty-tasks">
+  <div class="todo-empty" *ngIf="tasks.length === 0">
     🎉 All tasks completed! Add a new one above.
   </div>
 
