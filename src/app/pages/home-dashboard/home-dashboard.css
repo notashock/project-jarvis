@@ -1,83 +1,63 @@
-/* Root container */
-.home-dashboard {
+/* Dashboard Container */
+.dashboard-container {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
-  padding: 2rem;
-  background-color: #f8fafc;
-  min-height: 100vh;
-  box-sizing: border-box;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-/* Left column layout */
-.left-column {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-/* Right column layout */
-.right-column {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-/* Dashboard cards */
-.dashboard-card {
-  background: #ffffff;
-  border-radius: 0.75rem;
-  padding: 1.25rem;
-  box-shadow: 0 0.125rem 0.375rem rgba(0, 0, 0, 0.08);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  display: flex;
-  flex-direction: column;
-}
-
-.dashboard-card:hover {
-  transform: translateY(-0.2rem);
-  box-shadow: 0 0.375rem 0.75rem rgba(0, 0, 0, 0.12);
-}
-
-.dashboard-card h2 {
-  font-size: 1.25rem;
-  margin-bottom: 1rem;
-  font-weight: 600;
-  color: #1e293b;
-  border-bottom: 0.0625rem solid #e2e8f0;
-  padding-bottom: 0.5rem;
-}
-
-/* Combined Todo + Email Summary */
-.combined-card .combined-top {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
-}
-
-.combined-card .sub-card {
-  background: #f9fafb;
-  border-radius: 0.5rem;
+  grid-template-columns: 2fr 2fr;
+  gap: 1rem;
   padding: 1rem;
-  box-shadow: inset 0 0.0625rem 0.25rem rgba(0, 0, 0, 0.05);
+  background-color: #f5f5f5;
+  height: 100vh;
+  font-family: Arial, sans-serif;
 }
 
-.combined-card .sub-card h2 {
-  font-size: 1.125rem;
-  margin-bottom: 0.75rem;
-  border-bottom: 0.0625rem solid #e2e8f0;
-  padding-bottom: 0.25rem;
+/* Cards */
+.dashboard-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  display: flex;
+  height: calc(100vh - 20rem); /* Equal height for all sections */
+  padding: 0.5rem;
+  flex-direction: column;
+  gap: 1rem;
+  overflow: hidden;
 }
 
-/* Responsive */
-@media (max-width: 64em) {
-  .home-dashboard {
-    grid-template-columns: 1fr;
-    padding: 1.25rem;
-  }
+/* Headers with action buttons */
+.todo-header, .section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 
-  .combined-card .combined-top {
-    grid-template-columns: 1fr; /* stack Todo and Email Summary */
-  }
+h3 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+/* Action buttons styling */
+.todo-actions button,
+.section-actions button {
+  margin-left: 0.5rem;
+  padding: 0.4rem 0.8rem;
+  border: none;
+  border-radius: 6px;
+  background-color: #3498db;
+  color: white;
+  cursor: pointer;
+}
+
+.todo-actions button:last-child,
+.section-actions button:last-child {
+  background-color: #2ecc71;
+}
+
+.todo-actions button:hover,
+.section-actions button:hover {
+  opacity: 0.9;
+}
+
+/* Placeholder text */
+.dashboard-card p {
+  color: #555;
+  font-style: italic;
 }

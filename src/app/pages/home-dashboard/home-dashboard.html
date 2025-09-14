@@ -1,40 +1,45 @@
-<div class="home-dashboard">
-  <!-- Left column -->
-  <div class="left-column">
-    <div class="dashboard-card combined-card">
-      <div class="combined-top">
-        <div class="sub-card">
-          <h2>Todo</h2>
-          <app-todo></app-todo>
-        </div>
+<div class="dashboard-container">
 
-        <div class="sub-card">
-          <h2>Email Summary</h2>
-          <app-email-summary></app-email-summary>
-        </div>
+  <!-- Todo Section -->
+  <section id="todo" class="dashboard-card">
+    <div class="todo-header">
+      <h3>Todo</h3>
+      <div class="todo-actions">
+        <button (click)="addTaskToTodo()">Add Task</button>
+        <button (click)="refreshTodo()">Refresh</button>
       </div>
     </div>
+    <app-todo></app-todo>
+  </section>
 
-    <div class="dashboard-card">
-      <h2>Connected Accounts</h2>
-      <app-accounts [accounts]="accounts"></app-accounts>
+  <!-- Emails Section -->
+  <section id="emails" class="dashboard-card">
+    <div class="section-header">
+      <h3>Emails</h3>
+      <div class="section-actions">
+        <button (click)="refreshEmails()">Refresh</button>
+      </div>
     </div>
-  </div>
+    <app-emails></app-emails>
+  </section>
 
-  <!-- Right column -->
-  <div class="right-column">
-    <div class="dashboard-card">
-      <h2>Emails</h2>
-      <app-emails
-        [emails]="emails"
-        [loading]="loading"
-        (refresh)="refreshEmails()">
-      </app-emails>
+  <!-- Email Summary Section -->
+  <section id="email-summary" class="dashboard-card">
+    <div class="section-header">
+      <h3>Email Summary</h3>
+      <div class="section-actions">
+        <button (click)="refreshEmailSummary()">Refresh</button>
+      </div>
     </div>
+    <app-email-summary></app-email-summary>
+  </section>
 
-    <div class="dashboard-card">
-      <h2>Upcoming Classroom Details</h2>
-      <!-- <app-classroom></app-classroom> -->
+  <!-- Classroom Section (future) -->
+  <section id="classroom" class="dashboard-card">
+    <div class="section-header">
+      <h3>Classroom Details</h3>
     </div>
-  </div>
+    <p>Coming soon...</p>
+  </section>
+
 </div>

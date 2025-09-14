@@ -1,6 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { DatePipe } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { TodoComponent } from '../../components/todo/todo';
 import { EmailSummaryComponent } from '../../components/email-summary/email-summary';
 import { EmailsComponent } from '../../components/emails/emails';
@@ -28,6 +27,9 @@ export class HomeDashboardComponent implements OnInit {
   error: string | null = null;
   selectedGoogleId: string | null = null;
 
+  // Child component references
+  @ViewChild(TodoComponent) todoComp!: TodoComponent;
+  @ViewChild(EmailsComponent) emailsComp!: EmailsComponent;
   @ViewChild(EmailSummaryComponent) emailSummaryComp!: EmailSummaryComponent;
 
   constructor(private emailService: EmailService) {}
@@ -37,6 +39,24 @@ export class HomeDashboardComponent implements OnInit {
     this.loadEmailsFromDb();
   }
 
+  /** ----------------------------
+   *  Todo Section Methods
+   * ---------------------------- */
+  addTaskToTodo() {
+    if (this.todoComp) {
+      this.todoComp.addTask();
+    }
+  }
+
+  refreshTodo() {
+    if (this.todoComp) {
+      this.todoComp.reloadTasks();
+    }
+  }
+
+  /** ----------------------------
+   *  Emails Section Methods
+   * ---------------------------- */
   fetchAccounts() {
     this.emailService.getConnectedAccounts().subscribe({
       next: (data) => {
@@ -87,5 +107,14 @@ export class HomeDashboardComponent implements OnInit {
         this.loading = false;
       }
     });
+  }
+
+  /** ----------------------------
+   *  Email Summary Methods
+   * ---------------------------- */
+  refreshEmailSummary() {
+    if (this.emailSummaryComp) {
+      this.emailSummaryComp.fetchSummary();
+    }
   }
 }
