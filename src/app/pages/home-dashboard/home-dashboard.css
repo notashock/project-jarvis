@@ -1,40 +1,44 @@
-/* Dashboard Container */
+/* Root Dashboard Container */
 .dashboard-container {
   display: grid;
-  grid-template-columns: 2fr 2fr;
+  grid-template-columns: 1fr 1fr; /* Two columns layout */
+  grid-auto-rows: 1fr; /* Equal row height */
   gap: 1rem;
   padding: 1rem;
   background-color: #f5f5f5;
   height: 100vh;
+  box-sizing: border-box;
   font-family: Arial, sans-serif;
 }
 
-/* Cards */
+/* Dashboard Cards */
 .dashboard-card {
   background: #fff;
   border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   display: flex;
-  height: calc(100vh - 20rem); /* Equal height for all sections */
-  padding: 0.5rem;
   flex-direction: column;
-  gap: 1rem;
   overflow: hidden;
+  padding: 0.5rem;
+  height: 100%;
 }
 
-/* Headers with action buttons */
-.todo-header, .section-header {
+/* Section Headers with action buttons */
+.todo-header,
+.section-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 0.5rem;
 }
 
 h3 {
   margin: 0;
   font-size: 1.2rem;
+  color: #333;
 }
 
-/* Action buttons styling */
+/* Action Buttons */
 .todo-actions button,
 .section-actions button {
   margin-left: 0.5rem;
@@ -44,6 +48,8 @@ h3 {
   background-color: #3498db;
   color: white;
   cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s ease;
 }
 
 .todo-actions button:last-child,
@@ -53,11 +59,43 @@ h3 {
 
 .todo-actions button:hover,
 .section-actions button:hover {
-  opacity: 0.9;
+  background-color: #2980b9;
 }
 
-/* Placeholder text */
+.todo-actions button:last-child:hover,
+.section-actions button:last-child:hover {
+  background-color: #27ae60;
+}
+
+/* Scrollable Content Area inside cards */
+.dashboard-content {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 0.3rem; /* space for scrollbar */
+}
+
+/* Scrollbar Styling */
+.dashboard-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.dashboard-content::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 4px;
+}
+
+.dashboard-content::-webkit-scrollbar-thumb:hover {
+  background: #aaa;
+}
+
+.dashboard-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Empty/Placeholder text */
 .dashboard-card p {
-  color: #555;
+  color: #777;
   font-style: italic;
+  margin: 0.5rem 0;
+  text-align: center;
 }
