@@ -1,95 +1,60 @@
+/* Email Summary Container */
 .summary-container {
-  background: #ffffff;
-  padding: 1.25rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  font-family: 'Lexend', sans-serif;
+  flex: 1; /* take remaining space inside the card */
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  overflow: hidden; /* prevent overflow outside card */
+  padding: 0.5rem;
 }
 
-/* Header: Title + Button aligned */
-.summary-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+/* Scrollable content */
+.summary-content,
+.summary-markdown {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 0.5rem;
 }
 
-.summary-header h2 {
-  margin: 0;
-  font-size: 1.4rem;
-  font-weight: 600;
-  color: #333;
+/* Loading and error states */
+.loading-text {
+  color: #3498db;
+  font-style: italic;
+  text-align: center;
+  margin-top: 1rem;
 }
 
-/* Refresh button */
-.refresh-btn {
-  background: #4caf50;
-  border: none;
-  color: #fff;
-  padding: 0.4rem 0.8rem;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  transition: background 0.2s ease;
-  display: flex;
-  align-items: center;
-  gap: 0.3rem;
+.error-text {
+  color: #e74c3c;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 1rem;
 }
 
-.refresh-btn:hover:not(:disabled) {
-  background: #388e3c;
+/* Placeholder state */
+.placeholder-text {
+  color: #777;
+  text-align: center;
+  font-style: italic;
+  margin-top: 1rem;
 }
 
-.refresh-btn:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
-}
-
-/* Spinner animation */
-.spinner {
-  width: 16px;
-  height: 16px;
-  border: 2px solid #fff;
-  border-top: 2px solid transparent;
-  border-radius: 50%;
-  display: inline-block;
-  animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-/* Content area */
-.summary-content {
-  background: #f9fafb;
-  padding: 1rem;
-  border-radius: 8px;
-  font-size: 0.95rem;
+/* Markdown styling */
+.summary-markdown {
   line-height: 1.5;
   color: #333;
 }
 
-/* States */
-.loading-text {
-  color: #388e3c;
-  font-style: italic;
+.summary-markdown h1,
+.summary-markdown h2,
+.summary-markdown h3 {
+  margin: 0.5rem 0;
+  font-weight: bold;
 }
 
-.error-text {
-  color: #d32f2f;
-  font-weight: 500;
+.summary-markdown ul {
+  padding-left: 1.2rem;
 }
 
-.placeholder-text {
-  color: #777;
-  font-style: italic;
-}
-
-.summary-text {
-  color: #1b5e20;
+.summary-markdown li {
+  margin-bottom: 0.4rem;
 }

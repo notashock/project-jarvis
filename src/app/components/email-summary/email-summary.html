@@ -1,31 +1,4 @@
 <div class="summary-container">
-  <div class="summary-header">
-    <h2>Email Digest</h2>
-    <button (click)="fetchSummary()" class="refresh-btn" [disabled]="loading" title="Refresh summary">
-      <ng-container *ngIf="!loading">
-        <!-- Refresh icon -->
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="16"
-          height="16"
-          fill="currentColor"
-          viewBox="0 0 16 16"
-        >
-          <path
-            d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.418A6 6 0 1 1 8 2v1z"
-          />
-          <path
-            d="M8 0a.5.5 0 0 1 .5.5v4.707l2.146-2.147a.5.5 0 0 1 .708.708L8.5 6.707V2.5A.5.5 0 0 1 8 2z"
-          />
-        </svg>
-      </ng-container>
-      <ng-container *ngIf="loading">
-        <span class="spinner"></span>
-      </ng-container>
-    </button>
-  </div>
-
-  <div class="summary-content">
   <!-- Loading state -->
   <div *ngIf="loading" class="loading-text">
     Generating summary...
@@ -37,12 +10,14 @@
   </div>
 
   <!-- Summary content rendered as Markdown -->
-  <markdown *ngIf="summary && !loading && !error" [data]="summary" class="summary-markdown"></markdown>
+  <markdown
+    *ngIf="summary && !loading && !error"
+    [data]="summary"
+    class="summary-markdown"
+  ></markdown>
 
-  <!-- Placeholder when no summary -->
+  <!-- Empty state -->
   <div *ngIf="!summary && !loading && !error" class="placeholder-text">
     Click <strong>Refresh</strong> to generate a summary of your latest emails.
   </div>
-</div>
-
 </div>
