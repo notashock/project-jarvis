@@ -15,7 +15,7 @@ const deleteOldEmails = async () => {
 export const startEmailCleanupJob = () => {
   // For testing: run every minute
   // Change to "0 0 * * *" for midnight
-  cron.schedule("* * * * *", async () => {
+  cron.schedule("0 * * * *", async () => {
     console.log("[CRON] Running auto-delete old emails...");
     try {
       const result = await deleteOldEmails();

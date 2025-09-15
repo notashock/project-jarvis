@@ -26,7 +26,7 @@ app.use(express.json());
 // Connect to the database
 connectDB();
 
-// startEmailCleanupJob();
+startEmailCleanupJob();
 // Routes
 app.use("/api/tasks", taskRoutes);
 app.use("/api/gemini", geminiRoutes);
