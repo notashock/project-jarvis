@@ -5,6 +5,7 @@ import { EmailSummaryComponent } from '../../components/email-summary/email-summ
 import { EmailsComponent } from '../../components/emails/emails';
 import { AccountsComponent } from '../../components/accounts/accounts';
 import { EmailService, Email } from '../../services/email.service';
+import { ClassDetailsComponent } from "../../components/class-details/class-details";
 
 @Component({
   selector: 'app-home',
@@ -15,8 +16,9 @@ import { EmailService, Email } from '../../services/email.service';
     TodoComponent,
     EmailSummaryComponent,
     EmailsComponent,
-    AccountsComponent
-  ],
+    AccountsComponent,
+    ClassDetailsComponent
+],
   templateUrl: './home-dashboard.html',
   styleUrls: ['./home-dashboard.css']
 })
