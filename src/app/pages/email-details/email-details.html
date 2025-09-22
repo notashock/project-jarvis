@@ -1,0 +1,14 @@
+<div class="email-details-container" *ngIf="email; else noEmail">
+  <h2>{{ email.subject }}</h2>
+  <p><strong>From:</strong> {{ email.from }}</p>
+  <p><strong>Date:</strong> {{ email.date | date:'short' }}</p>
+  <div class="snippet">
+    <p>{{ email.body }}</p>
+  </div>
+  <a routerLink="/emails" class="back-link">← Back to Emails</a>
+</div>
+
+<ng-template #noEmail>
+  <p>Email not found.</p>
+  <a routerLink="/emails" class="back-link">← Back to Emails</a>
+</ng-template>
