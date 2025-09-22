@@ -1,0 +1,23 @@
+<div class="emails-container">
+  <h2>Emails</h2>
+
+  <!-- Loading State -->
+  <p *ngIf="loading">Loading emails...</p>
+
+  <!-- Error State -->
+  <p *ngIf="error" class="error">{{ error }}</p>
+
+  <!-- Emails List -->
+  <div *ngIf="!loading && emails.length > 0" class="email-list">
+    <div *ngFor="let email of emails" class="email-card">
+      <p><strong>From:</strong> {{ email.from }}</p>
+      <p><strong>Subject:</strong> {{ email.subject }}</p>
+      <p><strong>Date:</strong> {{ email.date | date:'short' }}</p>
+      <!-- <p>{{ email.body }}</p> -->
+      <a [routerLink]="['/emails', email._id]" [state]="{ email: email }" class="view-link">View Details</a>
+    </div>
+  </div>
+
+  <!-- No Emails -->
+  <p *ngIf="!loading && emails.length === 0">No emails available.</p>
+</div>
