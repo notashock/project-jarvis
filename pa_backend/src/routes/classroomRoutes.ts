@@ -23,7 +23,7 @@ function getGoogleId(req: Request, res: Response): string | null {
  * GET /api/classroom/courses
  * Fetch all active courses for the logged-in user
  */
-router.get("/courses", async (req: Request, res: Response) => {
+router.get("/courses/:googleId", async (req: Request, res: Response) => {
   try {
     const googleId = getGoogleId(req, res);
     if (!googleId) return;
