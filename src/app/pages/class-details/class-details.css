@@ -1,0 +1,27 @@
+.class-details-container {
+  padding: 1.5rem;
+}
+
+.class-details-container h2 {
+  margin-bottom: 0.5rem;
+  font-size: 1.4rem;
+  color: #333;
+}
+
+.class-details-container p {
+  margin: 0.25rem 0;
+  font-size: 0.95rem;
+  color: #444;
+}
+
+.back-link {
+  display: inline-block;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: #1976d2;
+  text-decoration: none;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}

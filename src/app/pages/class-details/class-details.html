@@ -1,0 +1,12 @@
+<div class="class-details-container" *ngIf="course; else noCourse">
+  <h2>{{ course.name }}</h2>
+  <p><strong>Section:</strong> {{ course.section || 'N/A' }}</p>
+  <p><strong>Description:</strong> {{ course.description || 'No description available.' }}</p>
+
+  <a routerLink="/classroom" class="back-link">← Back to Classroom</a>
+</div>
+
+<ng-template #noCourse>
+  <p>Course details not available.</p>
+  <a routerLink="/classroom" class="back-link">← Back to Classroom</a>
+</ng-template>
