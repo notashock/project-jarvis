@@ -1,0 +1,11 @@
+<header class="app-header">
+  <div class="logo">
+    <h1>Jarvis</h1>
+  </div>
+
+  <nav class="nav-links">
+    <a routerLink="/dashboard" [class.active]="isActive('/dashboard')">Dashboard</a>
+    <a routerLink="/emails" [class.active]="isActive('/emails')">Emails</a>
+    <a routerLink="/classroom" [class.active]="isActive('/classroom')">Classroom</a>
+  </nav>
+</header>
