@@ -1,0 +1,54 @@
+<div class="course-details-container">
+  <h2>Course Details</h2>
+
+  <!-- COURSE INFO -->
+  <p *ngIf="loadingCourse">Loading course details...</p>
+  <p *ngIf="errorCourse && !loadingCourse" class="error">{{ errorCourse }}</p>
+
+  <div *ngIf="!loadingCourse && course" class="course-card">
+    <p><strong>Name:</strong> {{ course.name }}</p>
+    <p><strong>Section:</strong> {{ course.section || 'No section' }}</p>
+    <p><strong>Course ID:</strong> {{ course.courseId }}</p>
+    <p><strong>Description:</strong> {{ course.description || 'No description available' }}</p>
+    <p><strong>Teacher:</strong> {{ course.teacher || 'N/A' }}</p>
+    <button class="back-btn" (click)="goBack()">Back to Classroom</button>
+  </div>
+
+  <!-- ANNOUNCEMENTS -->
+  <h3>Announcements</h3>
+  <p *ngIf="loadingAnnouncements">Loading announcements...</p>
+  <p *ngIf="errorAnnouncements" class="error">{{ errorAnnouncements }}</p>
+  <ng-container *ngIf="!loadingAnnouncements && announcements.length > 0">
+    <div class="course-card" *ngFor="let ann of announcements">
+      <p><strong>{{ ann.title }}</strong></p>
+      <p>{{ ann.message }}</p>
+      <p><em>{{ ann.date | date:'short' }}</em></p>
+    </div>
+  </ng-container>
+  <p *ngIf="!loadingAnnouncements && announcements.length === 0">No announcements available.</p>
+
+  <!-- ASSIGNMENTS -->
+  <h3>Assignments</h3>
+  <p *ngIf="loadingAssignments">Loading assignments...</p>
+  <p *ngIf="errorAssignments" class="error">{{ errorAssignments }}</p>
+  <ng-container *ngIf="!loadingAssignments && assignments.length > 0">
+    <div class="course-card" *ngFor="let assign of assignments">
+      <p><strong>{{ assign.title }}</strong></p>
+      <p>{{ assign.description || 'No description' }}</p>
+      <p><em>Due: {{ assign.dueDate | date:'short' }}</em></p>
+    </div>
+  </ng-container>
+  <p *ngIf="!loadingAssignments && assignments.length === 0">No assignments available.</p>
+
+  <!-- MATERIALS -->
+  <h3>Materials</h3>
+  <p *ngIf="loadingMaterials">Loading materials...</p>
+  <p *ngIf="errorMaterials" class="error">{{ errorMaterials }}</p>
+  <ng-container *ngIf="!loadingMaterials && materials.length > 0">
+    <div class="course-card" *ngFor="let mat of materials">
+      <p><strong>{{ mat.title }}</strong> ({{ mat.type || 'file' }})</p>
+      <a [href]="mat.url" target="_blank">View / Download</a>
+    </div>
+  </ng-container>
+  <p *ngIf="!loadingMaterials && materials.length === 0">No materials available.</p>
+</div>

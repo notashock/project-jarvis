@@ -1,0 +1,31 @@
+<header class="app-header" (click)="closeDropdown()">
+  <div class="logo">
+    <h1>Jarvis</h1>
+  </div>
+
+  <nav class="nav-links">
+    <a
+      routerLink="/dashboard"
+      [class.active]="isActive('/dashboard')"
+      (click)="$event.stopPropagation()"
+    >
+      Dashboard
+    </a>
+    <a
+      routerLink="/emails"
+      [class.active]="isActive('/emails')"
+      (click)="$event.stopPropagation()"
+    >
+      Emails
+    </a>
+  </nav>
+
+  <div class="profile-container" (click)="toggleDropdown($event)">
+    <span class="material-icons profile-icon">account_circle</span>
+
+    <div class="dropdown" *ngIf="showDropdown" (click)="$event.stopPropagation()">
+      <!-- Render the accounts component inside the dropdown -->
+      <app-accounts></app-accounts>
+    </div>
+  </div>
+</header>

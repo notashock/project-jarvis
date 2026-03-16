@@ -1,0 +1,61 @@
+.accounts-container {
+  padding: 1rem;
+  text-align: center;
+  min-width: 250px;
+}
+
+.section-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: #333;
+}
+
+.accounts-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1rem 0;
+}
+
+.account-item {
+  padding: 0.5rem;
+  border-radius: 6px;
+  background: #f9f9f9;
+  margin-bottom: 0.5rem;
+  transition: background 0.2s;
+}
+
+.account-item:hover {
+  background: #f0f0f0;
+}
+
+.account-email {
+  font-weight: 500;
+  color: #222;
+}
+
+.placeholder-text {
+  color: #777;
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
+}
+
+.connect-btn {
+  background-color: #4285f4;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.connect-btn:hover:not(:disabled) {
+  background-color: #357ae8;
+}
+
+.connect-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

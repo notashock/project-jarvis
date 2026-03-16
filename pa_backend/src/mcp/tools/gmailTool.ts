@@ -1,7 +1,7 @@
 import { fetchTodaysEmails } from "../../services/gmailService.js";
 import type { IEmail } from "../../models/Email.js";
 import EmailModel from "../../models/Email.js";
-import Token from "../../models/token.js";
+import { User } from "../../models/user.js";
 
 /**
  * Fetch and return today's emails for a given googleId
@@ -26,7 +26,8 @@ export const getTodaysEmails = async (
  * Fetch latest 20 emails from DB
  */
 export const getAllEmails = async (): Promise<IEmail[]> => {
-  return EmailModel.find().sort({ date: -1 }).limit(20);
+  const emails = await EmailModel.find().sort({ date: -1 }).limit(20);
+  return emails || [];
 };
 
 /**
@@ -35,5 +36,9 @@ export const getAllEmails = async (): Promise<IEmail[]> => {
 export const getConnectedMails = async (): Promise<
   { email: string; googleId: string }[]
 > => {
-  return Token.find({}, "email googleId");
+  const users = await User.find({}, "email googleId");
+  return users.map(u => ({
+    email: u.email ?? "",
+    googleId: u.googleId ?? "",
+  }));
 };

@@ -1,0 +1,38 @@
+<div class="classroom-container">
+  <h2>Classroom</h2>
+
+  <!-- Loading & error -->
+  <p *ngIf="loading" class="loading">Loading your courses...</p>
+  <p *ngIf="error" class="error">{{ error }}</p>
+
+  <!-- Selected courses from DB -->
+  <div *ngIf="!loading && selectedCourses.length > 0" class="course-list">
+    <h3>Your Selected Courses</h3>
+    <div *ngFor="let course of selectedCourses" class="course-card">
+      <p><strong>{{ course.name }}</strong></p>
+      <p>{{ course.section || 'No section' }}</p>
+      <button (click)="viewCourseDetails(course)">View Details</button>
+    </div>
+  </div>
+
+  <!-- Live courses if DB empty -->
+  <div *ngIf="!loading && selectedCourses.length === 0 && liveCourses.length > 0" class="course-list">
+    <h3>Available Active Courses</h3>
+    <div *ngFor="let course of liveCourses" class="course-card">
+      <label>
+        <input type="checkbox" [(ngModel)]="course.selected" />
+        <strong>{{ course.name }}</strong> ({{ course.section || 'No section' }})
+      </label>
+      <p class="course-id">Course ID: {{ course.courseId }}</p>
+    </div>
+    <button [disabled]="!hasSelectedLiveCourses" (click)="saveSelectedCourses()">
+      Save Selected Courses
+  </button>
+
+  </div>
+
+  <!-- No courses -->
+  <p *ngIf="!loading && selectedCourses.length === 0 && liveCourses.length === 0">
+    No courses found.
+  </p>
+</div>

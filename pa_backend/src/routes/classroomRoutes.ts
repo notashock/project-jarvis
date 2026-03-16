@@ -1,82 +1,177 @@
 // src/routes/classroomRoutes.ts
 import type { Request, Response } from "express";
-import { Router } from "express";
-import {
-  fetchCourses,
-  fetchAnnouncements,
-  fetchCourseWork,
-} from "../services/classroomService.js";
+import express from "express"
+import { getUserCourses, getCourseById, updateCourse, deleteCourse, saveSelectedCourses } from "../mcp/tools/courseTool.js";
+import { ClassroomService } from "../services/classroomService.js";
 
-const router = Router();
+const router = express.Router();
 
-// Utility to extract googleId safely
-function getGoogleId(req: Request, res: Response): string | null {
-  const googleId = req.query.googleId;
-  if (!googleId || typeof googleId !== "string") {
-    res.status(400).json({ error: "Missing or invalid googleId" });
-    return null;
-  }
-  return googleId;
-}
+/** ==================== CourseTool CRUD Routes ==================== */
 
-/**
- * GET /api/classroom/courses
- * Fetch all active courses for the logged-in user
- */
-router.get("/courses/:googleId", async (req: Request, res: Response) => {
+// Get all courses for a user
+router.get("/courses/user/:googleId", async (req: Request, res: Response) => {
+  const googleId = req.params.googleId;
+  if (!googleId) return res.status(400).json({ error: "googleId is required" });
+
   try {
-    const googleId = getGoogleId(req, res);
-    if (!googleId) return;
-
-    const courses = await fetchCourses(googleId);
+    const courses = await getUserCourses(googleId);
+    console.log(courses);
     res.json(courses);
   } catch (err: any) {
-    console.error("Error fetching courses:", err.message);
-    res.status(500).json({ error: "Failed to fetch courses" });
+    res.status(500).json({ error: err.message });
   }
 });
 
-/**
- * GET /api/classroom/courses/:courseId/announcements
- * Fetch announcements for a specific course
- */
-router.get("/courses/:courseId/announcements", async (req: Request, res: Response) => {
+// Get single course
+router.get("/course/:courseId", async (req: Request, res: Response) => {
+  const courseId = req.params.courseId;
+  if (!courseId) return res.status(400).json({ error: "courseId is required" });
+
   try {
-    const googleId = getGoogleId(req, res);
-    if (!googleId) return;
-
-    const { courseId } = req.params;
-    if (!courseId) {
-      return res.status(400).json({ error: "Missing courseId" });
-    }
-
-    const announcements = await fetchAnnouncements(googleId, courseId);
-    res.json(announcements);
+    const course = await getCourseById(courseId);
+    if (!course) return res.status(404).json({ error: "Course not found" });
+    res.json(course);
   } catch (err: any) {
-    console.error("Error fetching announcements:", err.message);
-    res.status(500).json({ error: "Failed to fetch announcements" });
+    res.status(500).json({ error: err.message });
   }
 });
 
-/**
- * GET /api/classroom/courses/:courseId/coursework
- * Fetch coursework/materials for a specific course
- */
-router.get("/courses/:courseId/coursework", async (req: Request, res: Response) => {
+// Update course
+router.put("/courses/:courseId", async (req: Request, res: Response) => {
+  const courseId = req.params.courseId;
+  if (!courseId) return res.status(400).json({ error: "courseId is required" });
+
   try {
-    const googleId = getGoogleId(req, res);
-    if (!googleId) return;
-
-    const { courseId } = req.params;
-    if (!courseId) {
-      return res.status(400).json({ error: "Missing courseId" });
-    }
-
-    const coursework = await fetchCourseWork(googleId, courseId);
-    res.json(coursework);
+    const updated = await updateCourse(courseId, req.body);
+    if (!updated) return res.status(404).json({ error: "Course not found" });
+    res.json(updated);
   } catch (err: any) {
-    console.error("Error fetching coursework:", err.message);
-    res.status(500).json({ error: "Failed to fetch coursework" });
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Delete course
+router.delete("/courses/:courseId", async (req: Request, res: Response) => {
+  const courseId = req.params.courseId;
+  if (!courseId) return res.status(400).json({ error: "courseId is required" });
+
+  try {
+    const deleted = await deleteCourse(courseId);
+    if (!deleted) return res.status(404).json({ error: "Course not found" });
+    res.json({ message: "Course deleted successfully" });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Save selected courses
+router.post("/courses/save/:googleId", async (req: Request, res: Response) => {
+  const googleId = req.params.googleId;
+  const { courses, selectedCourseIds } = req.body;
+
+  if (!googleId) return res.status(400).json({ error: "googleId is required" });
+  if (!Array.isArray(courses) || !Array.isArray(selectedCourseIds)) {
+    return res.status(400).json({ error: "courses and selectedCourseIds are required arrays" });
+  }
+
+  try {
+    const saved = await saveSelectedCourses(googleId, courses, selectedCourseIds);
+    res.json(saved);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+/** ==================== ClassroomService Routes ==================== */
+
+// Get all active courses from Google Classroom
+router.get("/all/:googleId", async (req: Request, res: Response) => {
+  const googleId = req.params.googleId;
+  if (!googleId) return res.status(400).json({ error: "googleId is required" });
+
+  try {
+    const service = new ClassroomService(googleId);
+    await service.init();
+    const courses = await service.getAllCourses();
+    console.log(courses)
+    const safeCourses = courses.map(c => ({
+      courseId: c.courseId ?? "",
+      name: c.name ?? "",
+      section: c.section ?? "",
+      description: c.description ?? "",
+      room: c.room ?? "",
+      ownerId: c.ownerId ?? "",
+      enrollmentCode: c.enrollmentCode ?? "",
+      courseState: c.courseState ?? "",
+    }));
+    res.json(safeCourses);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Select and save courses from Google Classroom
+router.post("/classroom/save/:googleId", async (req: Request, res: Response) => {
+  const googleId = req.params.googleId;
+  const { courses, selectedCourseIds } = req.body;
+
+  if (!googleId) return res.status(400).json({ error: "googleId is required" });
+  if (!Array.isArray(courses) || !Array.isArray(selectedCourseIds)) {
+    return res.status(400).json({ error: "courses and selectedCourseIds are required arrays" });
+  }
+
+  try {
+    const service = new ClassroomService(googleId);
+    await service.init();
+    const saved = await service.selectAndSaveCourses(courses, selectedCourseIds);
+    res.json(saved);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Fetch and save announcements
+router.post("/classroom/announcements/:googleId/:courseId", async (req: Request, res: Response) => {
+  const { googleId, courseId } = req.params;
+  if (!googleId || !courseId) return res.status(400).json({ error: "googleId and courseId are required" });
+
+  try {
+    const service = new ClassroomService(googleId);
+    await service.init();
+    const saved = await service.fetchAndSaveAnnouncements(courseId);
+    res.json(saved);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Fetch and save assignments
+router.post("/classroom/assignments/:googleId/:courseId", async (req: Request, res: Response) => {
+  const { googleId, courseId } = req.params;
+  if (!googleId || !courseId) return res.status(400).json({ error: "googleId and courseId are required" });
+
+  try {
+    const service = new ClassroomService(googleId);
+    await service.init();
+    const saved = await service.fetchAndSaveAssignments(courseId);
+    res.json(saved);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Fetch and save materials
+router.post("/classroom/materials/:googleId/:courseId", async (req: Request, res: Response) => {
+  const { googleId, courseId } = req.params;
+  if (!googleId || !courseId) return res.status(400).json({ error: "googleId and courseId are required" });
+
+  try {
+    const service = new ClassroomService(googleId);
+    await service.init();
+    const saved = await service.fetchAndSaveMaterials(courseId);
+    res.json(saved);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
   }
 });
 

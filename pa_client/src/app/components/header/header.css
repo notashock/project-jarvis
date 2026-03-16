@@ -1,0 +1,95 @@
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #1e1e1e;
+  color: #fff;
+  padding: 12px 24px;
+  position: relative;
+  z-index: 10;
+}
+
+.logo h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #61dafb;
+}
+
+.nav-links {
+  display: flex;
+  gap: 20px;
+}
+
+.nav-links a {
+  color: #ccc;
+  text-decoration: none;
+  font-size: 1rem;
+  transition: color 0.3s ease, border-bottom 0.3s ease;
+}
+
+.nav-links a:hover {
+  color: #fff;
+}
+
+.nav-links a.active {
+  color: #61dafb;
+  border-bottom: 2px solid #61dafb;
+}
+
+.profile-container {
+  position: relative;
+  cursor: pointer;
+}
+
+.profile-icon {
+  font-size: 36px;
+  color: #61dafb;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.profile-icon:hover {
+  transform: scale(1.1);
+  color: #8be9fd;
+}
+
+/* Dropdown wrapping the accounts component */
+.dropdown {
+  position: absolute;
+  right: 0;
+  top: 48px;
+  background-color: #2a2a2a;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+  padding: 8px;
+  min-width: 280px;      /* wide enough for accounts content */
+  max-height: 400px;     /* avoids excessive height */
+  overflow-y: auto;      /* scroll if too many accounts */
+  animation: fadeIn 0.2s ease-in-out;
+  z-index: 20;
+}
+
+/* Optional scrollbar styling */
+.dropdown::-webkit-scrollbar {
+  width: 6px;
+}
+
+.dropdown::-webkit-scrollbar-thumb {
+  background-color: #555;
+  border-radius: 3px;
+}
+
+.dropdown::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Subtle dropdown fade-in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

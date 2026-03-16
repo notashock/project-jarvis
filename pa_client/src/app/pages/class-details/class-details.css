@@ -1,0 +1,81 @@
+.course-details-container {
+  padding: 1.5rem;
+}
+
+.course-details-container h2 {
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.course-details-container h3 {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+  color: #444;
+}
+
+/* Card style for course info, announcements, assignments, materials */
+.course-card {
+  padding: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  transition: box-shadow 0.2s ease;
+  margin-bottom: 1rem;
+}
+
+.course-card:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.course-card p {
+  margin: 0.25rem 0;
+  font-size: 0.95rem;
+  color: #444;
+}
+
+.course-card em {
+  color: #666;
+  font-size: 0.85rem;
+}
+
+/* Back button styling */
+.back-btn {
+  display: inline-block;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: #1976d2;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.back-btn:hover {
+  text-decoration: underline;
+}
+
+/* Links for materials */
+.course-card a {
+  display: inline-block;
+  margin-top: 0.25rem;
+  font-size: 0.9rem;
+  color: #1976d2;
+  text-decoration: none;
+}
+
+.course-card a:hover {
+  text-decoration: underline;
+}
+
+/* Error messages */
+.error {
+  color: #d32f2f;
+  margin: 0.5rem 0;
+}
+
+/* Fallback messages */
+.course-details-container p {
+  margin: 0.25rem 0;
+}
